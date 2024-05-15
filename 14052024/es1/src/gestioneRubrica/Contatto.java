@@ -17,7 +17,7 @@ public class Contatto {
     protected String cognome;
     protected String telefono;
     protected tipoContratto tipo;
-    protected String[] altreInfo;
+    protected AltreInfo altreInfo;
 
     /**
      * Metodo costruttore con aggiunta di informazioni
@@ -34,7 +34,10 @@ public class Contatto {
         this.telefono=telefono;
         this.tipo=tipo;
         if(!infoExtra.isBlank()) //prima controllo se la stringa contiene dei valori
-            this.altreInfo=infoExtra.split(","); //le informazioni extra sono separate dalla virgola
+        {
+            String[] info = infoExtra.split(",");//le informazioni extra sono separate dalla virgola
+            this.altreInfo=new AltreInfo(info[0], info[1], info[2]); //creo un nuovo oggetto con le informazioni extra
+        }
     }
 
     /* utilizzo dei vari metodi get/set */
@@ -65,8 +68,24 @@ public class Contatto {
         this.tipo=tipo;
     }
 
+    /**
+     * Metodo che visualizza lo stato del contatto,
+     * con tutte le informazioni necessarie per
+     * identificarlo
+     * @return formato stringa dei dati
+     */
     public String visualizza(){
-        return String.format("Nome: %s\tCognome: %s\nTelefono: %s\tContratto: %s",
+        /* prima assegno tutti i valori
+        * essenziali alla creazione di un nuovo contatto */
+        String output=String.format("Nome: %s\tCognome: %s\nTelefono: %s\tContratto: %s",
                 this.nome, this.cognome, this.telefono, this.tipo.name());
+
+        /* poi verifico se ci sono anche informazioni
+        * ulteriori da aggiungere,
+        * in tal caso le accodo alla stringa già creata */
+        if(!this.altreInfo.visualizza().isBlank())
+            output+=String.format("\n%s", this.altreInfo.visualizza());
+
+        return output; //ritorno risultato da stampare
     }
 }
