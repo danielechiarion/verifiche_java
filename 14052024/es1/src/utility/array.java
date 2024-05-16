@@ -1,5 +1,7 @@
 package utility;
 
+import gestioneRubrica.Contatto;
+
 /**
  * Classe che si occupa di
  * alcuni metodi utili alla gestione di un array
@@ -12,10 +14,10 @@ public class array {
      * @param array - array da aumentare
      * @return array con una posizione in più in coda
      */
-    private static Object aggiungiPosArray(Object[] array){
+    public static Contatto[] aggiungiPosArray(Contatto[] array){
         /* creo un nuovo array con la dimensione
         * pari all'array incrementata di 1 */
-        Object[] copia = new Object[array.length+1];
+        Contatto[] copia = new Contatto[array.length+1];
 
         /* copia dei valori dell'array originario */
         for(int i=0;i<array.length;i++)
@@ -30,11 +32,11 @@ public class array {
      * @param posizione - da rimuovere
      * @return - array con tutti gli elementi tranne quello da cancellare
      */
-    private static Object[] rimuoviPosArray(Object[] array, int posizione){
+    public static Contatto[] rimuoviPosArray(Contatto[] array, int posizione){
         /* creo un nuovo array
         * con una cella in meno
         * e dichiarazione del relativo indice */
-        Object[] arrayRidotto = new Object[array.length-1];
+        Contatto[] arrayRidotto = new Contatto[array.length-1];
         int indexArrayRidotto=0;
 
         /* copio tutti i valori tranne quello
@@ -44,5 +46,67 @@ public class array {
                 arrayRidotto[indexArrayRidotto++]=array[i];
 
         return arrayRidotto; //ritorno l'array scalato di una posizione
+    }
+
+    /**
+     * Metodo che permette di concatenare due array di interi
+     * secondo l'ordine con cui vengono inseriti i parametri
+     * @param array1 - primo array inserito
+     * @param array2 - secondo array inserito
+     * @return array in cui i due array vengono concatenati
+     */
+    public static int[] concatenaArray(int[] array1, int[] array2){
+        int[] nuovoArray = new int[array1.length+array2.length]; //dichiaro un array con la somma delle dimensioni degli array
+
+        /* copio i valori degli array sul nuovo array,
+        * seguendo l'ordine di inserimento dei parametri
+        * (prima array1, poi array2) */
+        for(int i=0;i<nuovoArray.length;i++){
+            /* distinguo i due casi dove si
+            * prende dal primo e dove si prende
+            * dal secondo array per popolare quello nuovo */
+            if(i<array1.length)
+                nuovoArray[i]=array1[i];
+            else
+                nuovoArray[i]=array2[i-array1.length];
+        }
+
+        return nuovoArray; //ritorno il nuovo array
+    }
+
+    /**
+     * Metodo che sfrutta l'algoritmo di ordinamento bubble sort.
+     * Vengono utilizzati come attributi di riferimento il nome e il cognome
+     * del contatto, in modo da ottenere un elenco in ordine alfabetico.
+     * Viene inoltre effettuato un controllo se l'array è gia ordinato,
+     * in modo da ridurre il numero di azioni da compiere
+     *
+     * @param vet array di contatti da riordinare
+     */
+    public static void bubbleSort(Contatto[] vet){
+        /* dichiarazione variabili
+         * utili all'ordinamento */
+        boolean scambio; //indica se è avvenuto almeno uno scambio all'interno di un ciclo
+        int passaggi=0; //indica quanti passaggi ha compiuto il bubble sort
+        Contatto temp; //variabile temporanea per lo switch
+
+        do {
+            scambio=false; //reinizializzo ogni volta la variabile
+            for(int i=0;i<vet.length-passaggi-1;i++){
+                /* se il contatto ha un cognome che viene dopo nell'ordine alfabetico,
+                 * (o il nome, in caso dello stesso cognome) ... */
+                if(vet[i].getCognome().compareToIgnoreCase(vet[i+1].getCognome())>0 ||
+                        vet[i].getCognome().equalsIgnoreCase(vet[i+1].getCognome()) &&
+                                vet[i].getNome().compareToIgnoreCase(vet[i+1].getNome())>0){
+                    /* ... si effettua lo scambio tra i contatti */
+                    temp=vet[i];
+                    vet[i]=vet[i+1];
+                    vet[i+1]=temp;
+
+                    scambio=true; //si aggiorna la variabile
+                }
+            }
+            passaggi++; //si incrementa il numero di passaggi fatti
+        }while(scambio); //continua se è stata fatta almeno un'operazione, altrimenti vuol dire che è già tutto ordinato
     }
 }
