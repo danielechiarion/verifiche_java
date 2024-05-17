@@ -13,8 +13,8 @@ public class Rubrica {
     protected Contatto[] contattiNormali;
     protected Contatto[] contattiNascosti;
     protected int maxLista;
-    protected String[] registroNormale;
-    protected String[] registroNascosto;
+    protected Chiamata[] registroNormale;
+    protected Chiamata[] registroNascosto;
 
     /* definizione dei metodi get/set */
 
@@ -32,11 +32,25 @@ public class Rubrica {
             return this.contattiNascosti;
         return null;
     }
+    /* metodo per restituire un contatto
+    all'interno di un array */
+    public Contatto getContatto(int pos){
+        /* se la posizione è minore della lunghezza
+        * degli array dei contatti normali, vuol dire che
+        * si trova in questo array */
+        if(pos<this.contattiNormali.length)
+            return this.contattiNormali[pos];
+        /* altrimenti vuol dire che si trova nell'array
+        * dei contatti nascosti, nella posizione meno la lunghezza
+        * dell'array dei contratti normali */
+        else
+            return this.contattiNascosti[pos-this.contattiNormali.length];
+    }
 
-    public String[] getRegistroNormale(){
+    public Chiamata[] getRegistroNormale(){
         return this.registroNormale;
     }
-    public String[] getRegistroNascosto(boolean value){
+    public Chiamata[] getRegistroNascosto(boolean value){
         if(value)
             return this.registroNascosto;
 
@@ -61,8 +75,8 @@ public class Rubrica {
     public Rubrica(String password, int nMaxLista){
         this.password=password; //imposto la password
         this.maxLista=nMaxLista; //imposto gli attributi
-        this.registroNascosto=new String[nMaxLista]; //imposto la lunghezza del registro normal
-        this.registroNormale=new String[nMaxLista]; //imposto la lunghezza del registro nascosto
+        this.registroNascosto=new Chiamata[nMaxLista]; //imposto la lunghezza del registro normal
+        this.registroNormale=new Chiamata[nMaxLista]; //imposto la lunghezza del registro nascosto
     }
 
     /**
