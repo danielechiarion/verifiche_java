@@ -1,1 +1,6 @@
-prova
+Il programma deve soddisfare i seguenti requisiti:
+- Ottenere 10 o 11 numeri interi
+- Controllare se i numeri sono compresi tra 0 e 30
+- Ordinare i numeri pari, lasciando invariati i numeri dispari
+- Lasciare inalterato, di qualunque tipo sia, l'ultimo numero
+- Visualizzare l'elenco di numeri che seguono questo tipo di ordinamento
