@@ -1,5 +1,7 @@
 package utility;
 
+import org.json.JSONObject;
+
 import static utility.tools.*;
 
 /**
@@ -217,5 +219,40 @@ public class dataOra {
                 System.out.println();
         }
         Wait(3); //attesa
+    }
+
+    /**
+     * Metodo per trasformare una data e un'ora in un
+     * JSON Object
+     * @return nuovo oggetto JSON
+     */
+    public JSONObject toJSON(){
+        JSONObject object = new JSONObject(); //creazione nuovo oggetto
+
+        /* inserimento attributi */
+        object.put("anno", this.anno);
+        object.put("mese", this.mese);
+        object.put("giorno", this.giorno);
+        object.put("ora", this.ora);
+        object.put("min", this.min);
+
+        return object; //ritorno nuovo oggetto creato
+    }
+
+    /**
+     * Metodo per convertire un JSONObject
+     * in un oggetto per indicare data e ora
+     * @param object - JSONObject da convertire
+     * @return oggetto dataOra
+     */
+    public static dataOra parseJSON(JSONObject object){
+        /* recupero informazioni */
+        int anno = object.getInt("anno");
+        int mese = object.getInt("mese");
+        int giorno = object.getInt("giorno");
+        int ora = object.getInt("ora");
+        int min = object.getInt("min");
+
+        return new dataOra(anno, mese, giorno, ora, min); //ritorno il nuovo oggettp creatp
     }
 }

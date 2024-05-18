@@ -52,15 +52,12 @@ public class Chiamata {
         JSONObject chiamata = new JSONObject(); //creo un nuovo oggetto
 
         /* imposto i dati essenziali da salvare */
-        chiamata.put("nome", this.contatto.getNome());
-        chiamata.put("cognome", this.contatto.getCognome());
-        chiamata.put("telefono", this.contatto.getTelefono());
-        chiamata.put("anno", this.dataOra.getAnno());
-        chiamata.put("giorno", this.dataOra.getGiorno());
-        chiamata.put("mese", this.dataOra.getMese());
-        chiamata.put("ora", this.dataOra.getOra());
-        chiamata.put("durata", this.durata);
+
 
         return chiamata; //ritorno l'oggetto
     }
+
+    /* public Chiamata parseJSON(JSONObject object){
+
+    } */
 }

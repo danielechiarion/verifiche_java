@@ -1,5 +1,7 @@
 package gestioneRubrica;
 
+import org.json.JSONObject;
+
 /**
  * tipi di contratti disponibili per un contatto.
  * Se ne può selezionare solo 1
@@ -87,5 +89,35 @@ public class Contatto {
             output+=String.format("\n%s", this.altreInfo.visualizza());
 
         return output; //ritorno risultato da stampare
+    }
+
+    /**
+     * Metodo che converte un contatto in un JSON
+     * Object
+     * @return JSON Object creato
+     */
+    public JSONObject toJSON(){
+        JSONObject object = new JSONObject(); //creazione oggetto
+
+        /* inserimento attributi */
+        object.put("nome", this.nome);
+        object.put("cognome", this.cognome);
+        object.put("telefono", this.telefono);
+        object.put("tipo", this.tipo.name()); //salvo in stringa per evitare problemi
+        object.put("altreInfo", this.altreInfo.toJSON());
+
+        return object; //ritorno oggetto creato
+    }
+
+    public static Contatto parseJSON(JSONObject object){
+        /* recupero informazioni */
+        String nome = object.getString("nome");
+        String cognome = object.getString("cognome");
+        String telefono = object.getString("telefono");
+        tipoContratto tipo = tipoContratto.valueOf(object.getString("tipo"));
+        AltreInfo altreInfo = AltreInfo.parseJSON(object.getJSONObject("altreInfo"));
+
+        return new Contatto(nome, cognome, telefono, tipo,
+                altreInfo.getNickname()+","+altreInfo.getSecondoTel()+","+altreInfo.getEmail()); //creo nuovo oggetto
     }
 }

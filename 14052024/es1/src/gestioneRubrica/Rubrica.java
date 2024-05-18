@@ -257,4 +257,40 @@ public class Rubrica {
 
         return vetPos; //ritorno l'array di posizioni
     }
+
+    /**
+     * Metodo che sfrutta l'algoritmo di ordinamento bubble sort.
+     * Vengono utilizzati come attributi di riferimento il nome e il cognome
+     * del contatto, in modo da ottenere un elenco in ordine alfabetico.
+     * Viene inoltre effettuato un controllo se l'array è gia ordinato,
+     * in modo da ridurre il numero di azioni da compiere
+     *
+     * @param vet array di contatti da riordinare
+     */
+    private static void bubbleSort(Contatto[] vet){
+        /* dichiarazione variabili
+         * utili all'ordinamento */
+        boolean scambio; //indica se è avvenuto almeno uno scambio all'interno di un ciclo
+        int passaggi=0; //indica quanti passaggi ha compiuto il bubble sort
+        Contatto temp; //variabile temporanea per lo switch
+
+        do {
+            scambio=false; //reinizializzo ogni volta la variabile
+            for(int i=0;i<vet.length-passaggi-1;i++){
+                /* se il contatto ha un cognome che viene dopo nell'ordine alfabetico,
+                 * (o il nome, in caso dello stesso cognome) ... */
+                if(vet[i].getCognome().compareToIgnoreCase(vet[i+1].getCognome())>0 ||
+                        vet[i].getCognome().equalsIgnoreCase(vet[i+1].getCognome()) &&
+                                vet[i].getNome().compareToIgnoreCase(vet[i+1].getNome())>0){
+                    /* ... si effettua lo scambio tra i contatti */
+                    temp=vet[i];
+                    vet[i]=vet[i+1];
+                    vet[i+1]=temp;
+
+                    scambio=true; //si aggiorna la variabile
+                }
+            }
+            passaggi++; //si incrementa il numero di passaggi fatti
+        }while(scambio); //continua se è stata fatta almeno un'operazione, altrimenti vuol dire che è già tutto ordinato
+    }
 }
