@@ -1,5 +1,8 @@
 package gestioneRubrica;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import static utility.array.*;
 
 /**
@@ -258,6 +261,144 @@ public class Rubrica {
         return vetPos; //ritorno l'array di posizioni
     }
 
+    /**
+     * Metodo che converte i dati contenuti in una rubrica in
+     * un oggetto JSON
+     * @return oggetto JSON rappresentante la rubrica
+     */
+    public JSONObject toJSON(){
+        JSONObject rubrica = new JSONObject(); //creo il nuovo oggetto
+
+        /* assegno subito gli attributi costituiti
+        * da variabili primitive */
+        rubrica.put("password", this.password);
+        rubrica.put("maxLista", this.maxLista);
+
+        /* recupero tutta la lista di contatti normali,
+        * utilizzando un JSON Array */
+        JSONArray contattiNormali = new JSONArray();
+        for(Contatto contatto : this.contattiNormali)
+            contattiNormali.put(contatto.toJSON()); //inserisco ogni volta un valore
+        rubrica.put("contattiNormali", contattiNormali);
+
+        /* recupero anche la lista di contatti nascosti */
+        JSONArray contattiNascosti = new JSONArray();
+        for(Contatto contatto : this.contattiNascosti)
+            contattiNascosti.put(contatto.toJSON());
+        rubrica.put("contattiNascosti", contattiNascosti); //inserisco un nuovo attributo al JSONObject
+
+        /* recupero i dati del registro normale */
+        JSONArray registroNormale = new JSONArray();
+        for(Chiamata chiamata : this.registroNormale)
+            registroNormale.put(chiamata.toJSON());
+        rubrica.put("registroNormale", registroNormale);
+
+        /* recupero i dati anche del registro nascosto */
+        JSONArray registroNascosto = new JSONArray();
+        for(Chiamata chiamata : this.registroNascosto)
+            registroNascosto.put(chiamata.toJSON());
+        rubrica.put("registroNascosto", registroNascosto);
+
+        return rubrica; //ritorno la nuova rubrica sotto formato JSONObject
+    }
+
+    public static Rubrica parseJSON(JSONObject object){
+        /* recupero dati "primitivi" */
+        int maxLista = object.getInt("maxLista");
+        String password = object.getString("password");
+
+        Rubrica rubrica = new Rubrica(password, maxLista); //creazione nuovo oggetto rubrica
+
+        /* recupero contatti normali */
+        /* creo un nuovo vettore assegnandoli una lunghezza
+        * pari ai contatti salvati sul file JSON */
+        rubrica.contattiNormali = new Contatto[object.getJSONArray("contattiNormali").length()];
+        /* per ogni contatto leggo il contenuto
+        * e lo trasformo in un oggetto contatto,
+        * inserendolo in un array */
+        for(int i=0;i<rubrica.contattiNormali.length;i++)
+            rubrica.contattiNormali[i]=Contatto.parseJSON(object.getJSONArray("contattiNormali").getJSONObject(i));
+
+        /* recupero i dati anche dei contatti nascosti */
+        rubrica.contattiNascosti = new Contatto[object.getJSONArray("contattiNascosti").length()];
+        for(int i=0;i<rubrica.contattiNascosti.length;i++)
+            rubrica.contattiNascosti[i]=Contatto.parseJSON(object.getJSONArray("contattiNascosti").getJSONObject(i));
+
+        /* recupero delle chiamate nel
+        * registro normale */
+        rubrica.registroNormale = new Chiamata[object.getJSONArray("registroNormale").length()];
+        for(int i=0;i<rubrica.registroNormale.length;i++)
+            rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
+
+        /* recupero delle chiamate
+        * nel registro nascosto */
+        rubrica.registroNascosto = new Chiamata[object.getJSONArray("registroNascosto").length()];
+        for(int i=0;i<rubrica.registroNascosto.length;i++)
+            rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
+
+        return rubrica; //ritorno la rubrica ricreata
+    }
+
+    public void registraChiamata(Chiamata chiamata, boolean siNascosta){
+        Chiamata[] registro;
+
+        /* il vettore punterà al registro normale o nascosto in
+        * base al valore del booleano */
+        if(!siNascosta)
+            registro=this.registroNormale;
+        else
+            registro=this.registroNascosto;
+
+        /* conto quale posizione gli spetta
+        * utilizzando la ricerca dicotomica */
+        int index=registro.length/2, start=0, finish=posOccupateArray(registro); //dichiaro indici
+        /* controllo subito se la chiamata deve essere posizionata
+        * in cima o in fondo alla lista */
+        if(chiamata.compareTo(registro[0])<0)
+            index=0;
+        else if(chiamata.compareTo(registro[finish-1])>0)
+            index=finish;
+        else{
+            /* comincio la ricerca, compiendola solo se
+             * non ho già trovato la posizione ideale, in cui la posizione sunbito
+             * prima è minore e la posizione subito dopo è maggiore */
+            while(registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])>0
+                    || registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])<0
+                    && start<=finish){
+                /* se il numero è minore di
+                 * quello richiesto, mi sposto a sinistra,
+                 * quindi modifico il limite */
+                if((registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])>0))
+                {
+                    finish=index-1;
+                    index=(start+finish)/2;
+                }
+                /* se il numero è maggiore
+                 * di quello richiesto, mi sposto a destra,
+                 * quindi modifico lo start */
+                else if(registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])<0)
+                {
+                    start=index+1;
+                    index=(start+finish)/2;
+                }
+            }
+
+            /* controllo se è stato trovato davvero la posizione,
+            * altrimenti verrà messo in fondo */
+            if(registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])>0);
+            else
+                index=finish+1;
+        }
+
+        /* controllo se la posizione è all'interno del vettore */
+        if(index<registro.length-1){
+            /* sposto prima tutti i valori */
+            for(int i=registro.length-1;i>index;i--)
+                registro[i]=registro[i-1];
+
+            registro[index]=chiamata; //posiziono infine la chiamata nella posizione corretta
+        }
+    }
     /**
      * Metodo che sfrutta l'algoritmo di ordinamento bubble sort.
      * Vengono utilizzati come attributi di riferimento il nome e il cognome

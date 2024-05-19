@@ -109,6 +109,12 @@ public class Contatto {
         return object; //ritorno oggetto creato
     }
 
+    /**
+     * Metodo per convertire un oggetto JSON
+     * in un oggetto della classe Contatto
+     * @param object JSON da convertire
+     * @return Contatto convertito
+     */
     public static Contatto parseJSON(JSONObject object){
         /* recupero informazioni */
         String nome = object.getString("nome");

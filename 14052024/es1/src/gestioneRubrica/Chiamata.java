@@ -52,12 +52,43 @@ public class Chiamata {
         JSONObject chiamata = new JSONObject(); //creo un nuovo oggetto
 
         /* imposto i dati essenziali da salvare */
-
+        chiamata.put("contatto", this.contatto.toJSON());
+        chiamata.put("dataOra", this.dataOra.toJSON());
+        chiamata.put("durata", this.durata);
 
         return chiamata; //ritorno l'oggetto
     }
 
-    /* public Chiamata parseJSON(JSONObject object){
+    /**
+     * Metodo che legge da un file JSON una chiamata e la converte
+     * in oggetto della classe chiamata
+     * @param object in JSON da convertire
+     * @return oggetto della classe chiamata convertito
+     */
+    public static Chiamata parseJSON(JSONObject object){
+        /* ricavo i dati */
+        Contatto contatto = Contatto.parseJSON(object.getJSONObject("contatto"));
+        dataOra dataOra = utility.dataOra.parseJSON(object.getJSONObject("dataOra"));
+        int durata = object.getInt("durata");
 
-    } */
+        return new Chiamata(contatto, dataOra, durata); //ritorno il nuovo contatto creato
+    }
+
+    /**
+     * Metodo che confronta due chiamate e stabilisce definitivamente
+     * se la chiamata associata al metodo viene prima o dopo
+     * rispetto a quella fornita da parametro.
+     * In questo caso, non è ammesso indicare che le due chiamate sono uguali, perchè questo
+     * metodo occorrerà per stabilire la cronologia delle chiamate
+     * @param altraChiamata - chiamata da confrontare
+     * @return <0 se la prima chiamata viene prima
+     *          >0 se la seconda chiamata viene prima
+     */
+    public int compareTo(Chiamata altraChiamata){
+        if(this.dataOra.compareTo(altraChiamata.dataOra)<0 ||
+        this.dataOra.compareTo(altraChiamata.dataOra)==0 && this.durata<=altraChiamata.durata)
+            return -1;
+        else
+            return 1;
+    }
 }
