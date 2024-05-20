@@ -71,6 +71,12 @@ public class tools {
             case 4:
                 System.out.println("This data already exists!");
                 break;
+            case 5:
+                System.out.println("Password inserita non valida");
+                break;
+            case 6:
+                System.out.println("ERROR! Data not found");
+                break;
             default:
                 System.out.println("");
         }

@@ -3,12 +3,6 @@ package gestioneRubrica;
 import org.json.JSONObject;
 
 /**
- * tipi di contratti disponibili per un contatto.
- * Se ne può selezionare solo 1
- */
-enum tipoContratto{abitazione, cellulare, aziendale, undefined};
-
-/**
  * Classe per la gestione di un singolo contatto,
  * con metodi e attrituti
  */

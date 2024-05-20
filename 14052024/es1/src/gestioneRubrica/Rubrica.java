@@ -180,15 +180,23 @@ public class Rubrica {
     public void visualizzaContatti(boolean siNascosti){
         /* stampo in output tutti i contatti
         * normali trovati */
-        System.out.println("*** ELENCO CONTATTI ***");
-        for(Contatto x : this.contattiNormali)
-            System.out.println(x.visualizza());
+        System.out.println("*** ELENCO CONTATTI NORMALI ***");
+        if(this.contattiNormali.length==0)
+            System.out.println("Nessun contatto presente");
+        else{
+            for(Contatto x : this.contattiNormali)
+                System.out.println(x.visualizza());
+        }
 
         /* stampo tutti i contatti se il valore e TRUE */
         if(siNascosti){
-            System.out.println("\n*** CONTATTI NASCOSTI ***");
-            for(Contatto x : this.contattiNascosti)
-                System.out.println(x.visualizza());
+            System.out.println("\n*** ELENCO CONTATTI NASCOSTI ***");
+            if(this.contattiNormali.length==0)
+                System.out.println("Nessun contatto presente");
+            else {
+                for(Contatto x : this.contattiNascosti)
+                    System.out.println(x.visualizza());
+            }
         }
     }
 
@@ -203,16 +211,27 @@ public class Rubrica {
         /* visualizzo prima tutto l'elenco
         del registro normale */
         System.out.println("REGISTRO NORMALE");
-        System.out.println("Ultime "+this.maxLista+" chiamate");
-        for (int i=0;this.registroNormale[i]!=null;i++)
-            System.out.println(this.registroNormale[i].visualizza());
+        if(this.contattiNormali.length==0)
+            System.out.println("Nessuna chiamata effettuata");
+        else{
+            System.out.println("Ultime "+this.maxLista+" chiamate");
+            for (int i=0;i<this.registroNascosto.length && this.registroNormale[i]!=null;i++)
+                System.out.println(this.registroNormale[i].visualizza());
+        }
+
+        if(!siNascosti)
+            return;
 
         /* se ho l'accesso al registro nascosto,
         * visualizzo anche le ultime chiamate */
         System.out.println("\nREGISTRO NASCOSTO");
-        System.out.println("Ultime "+this.maxLista+" chiamate");
-        for (int i=0;this.registroNascosto[i]!=null;i++)
-            System.out.println(this.registroNascosto[i].visualizza());
+        if(this.contattiNormali.length==0)
+            System.out.println("Nessuna chiamata effettuata");
+        else{
+            System.out.println("Ultime "+this.maxLista+" chiamate");
+            for (int i=0;i<this.registroNascosto.length && this.registroNascosto[i]!=null;i++)
+                System.out.println(this.registroNascosto[i].visualizza());
+        }
     }
 
     /**
@@ -355,13 +374,13 @@ public class Rubrica {
 
         /* recupero delle chiamate nel
         * registro normale */
-        rubrica.registroNormale = new Chiamata[object.getJSONArray("registroNormale").length()];
+        rubrica.registroNormale = new Chiamata[rubrica.maxLista];
         for(int i=0;i<rubrica.registroNormale.length;i++)
             rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
 
         /* recupero delle chiamate
         * nel registro nascosto */
-        rubrica.registroNascosto = new Chiamata[object.getJSONArray("registroNascosto").length()];
+        rubrica.registroNascosto = new Chiamata[rubrica.maxLista];
         for(int i=0;i<rubrica.registroNascosto.length;i++)
             rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
 

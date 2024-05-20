@@ -32,13 +32,13 @@ public class jsonFIle {
      * di dati in un array JSON
      * @param path
      */
-    public static JSONArray readDataJSON(String path)
+    public static JSONObject readDataJSON(String path)
     {
         /* variable declaration
          * out of try-catch */
         String content;
         /* array creation */
-        JSONArray vet = new JSONArray();
+        JSONObject object;
 
         /* using a string to catch all datas from JSON */
         try {
@@ -48,8 +48,8 @@ public class jsonFIle {
         }
 
         /* trasforming string into an array */
-        vet = new JSONArray(content);
-        return vet;
+        object = new JSONObject(content);
+        return object;
     }
 
     /**
