@@ -1,0 +1,34 @@
+L'esercizio deve essere necessariamente costituito dai seguenti metodi:
+
+- ordinamento(int[] array)
+	vengono contati i numeri pari e creato un array a parte, tralasciando anche l'ultimo numero dell'array. Successivamente viene applicato l'algoritmo di merge sort al solo vettore di numeri pari.
+	Successivamente i valori pari vengono sostituiti all'interno dell'array originario.
+	Dato che la sostituzione viene fatta in-place, non occorre ritornare alcun valore, basta inserire l'array come parametro.
+
+- checkRipetizioni(int[] array, int posValue), dove "array è dove controllare" e posValue è dove si trova il numero da controllare.
+	In questo metodo vengono controllati tutti i valori precedenti a posValue e, se viene trovato almeno un valore uguale, viene restituito TRUE, altrimenti viene restituito FALSE.
+	
+- mergeSort(int[] array)
+	Questo è il metodo fondamentale per l'algoritmo di ordinamento. L'array viene diviso ricorsivamente in tante piccole sezioni, per poi riunirle ordinandole attraversso il mergeofMerge.
+	Non è previsto un ritorno di alcun valore.
+
+- mergeofMerge(int[] left, int[] right, int[] array)
+	Questo metodo entra in funzione dopo la divisione ricorsiva nel metodo del mergeSort. 
+	Vengono uniti e ordinati i valori di left e right all'interno dell'array. 
+	Non è previsto un ritorno di alcun valore.
+
+- stampaNumeri(int[] array)
+	Questo metodo di output prende i valori di un array e li stampa a schermo in formato tabellare.
+
+In seguito è stato aggiunto un package tools, contenente una classe utility, dove sono presenti i seguenti metodi:
+- ClrScr() per la pulizia schermo in cmd di Windows
+- Wait() per generare un'attesa
+- messaggioErrore() metodo che contiene i vari messaggi di errore da stampare a schermo
+- safeIntInput() che prende in input un valore intero effettuando un controllo di dominio attraverso try/catch.
+
+MAIN 
+Il main è strutturato nelle seguenti fasi:
+1. Viene richiesto all'utente quanti numeri inserire, effettuando un controllo sul numero in base a quanto stabilito dalla consegna.
+2. Viene poi richiesto l'inserimento dei numeri, controllando anche qui che l'intervallo stabilito da consegna venga rispettato.
+3. Si invoca poi il metodo di ordinamento e si inserisce come parametro l'array ricavato in output.
+4. Viene poi stampato a video con l'apposito metodo l'array ordinato secondo le indicazioni fornite dalla consegna.
