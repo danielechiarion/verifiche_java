@@ -1,0 +1,6 @@
+L'utente, per ottenere un array ordinato secondo quanto stabilito da consegna, deve svolgere i seguenti passaggi:
+1. Viene chiesto all'utente di inserire quanti numeri si desiderano ordinare. Nel caso in cui venga inserito un numero dell'intervallo sbagliato o un valore di un altro dominio, verranno generati degli errori con relativo output e l'utente dovrà reinserire il dato.
+2. Viene chiesto all'utente di inserire i numeri e verrà effettuato anche qui un controllo su intervallo dominio e sulla ripetizione del numero nell'array. 
+	 Nel caso in cui venga inserito un valore già esistente, verrà generato un errore che porterà l'utente a reinserire l'ultimo valore.
+
+L'inserimento si blocca quando si raggiunge l'ultima posizione disponibile al termine della quale, si potrà vedere ordinato l'array secondo le indicazioni della consegna.
