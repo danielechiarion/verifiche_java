@@ -193,6 +193,29 @@ public class Rubrica {
     }
 
     /**
+     * Metodo che visualizza il registro delle ultime chiamate,
+     * considerando anche quelle nascoste,
+     * in base al valore inserito nel parametro
+     * @param siNascosti TRUE se si può accedere al registro nascsto
+     *                   FALSE se si può accedere solo al registro normale
+     */
+    public void visualizzaRegistro(boolean siNascosti){
+        /* visualizzo prima tutto l'elenco
+        del registro normale */
+        System.out.println("REGISTRO NORMALE");
+        System.out.println("Ultime "+this.maxLista+" chiamate");
+        for (int i=0;this.registroNormale[i]!=null;i++)
+            System.out.println(this.registroNormale[i].visualizza());
+
+        /* se ho l'accesso al registro nascosto,
+        * visualizzo anche le ultime chiamate */
+        System.out.println("\nREGISTRO NASCOSTO");
+        System.out.println("Ultime "+this.maxLista+" chiamate");
+        for (int i=0;this.registroNascosto[i]!=null;i++)
+            System.out.println(this.registroNascosto[i].visualizza());
+    }
+
+    /**
      * Metodo di ricerca di uno o più contatti
      * in base ai parametri forniti.
      * Viene utilizzato il metodo brute force, perchè si potrebbe
@@ -302,6 +325,12 @@ public class Rubrica {
         return rubrica; //ritorno la nuova rubrica sotto formato JSONObject
     }
 
+    /**
+     * Metodo che restituisce la rubrica da quanto
+     * letto nel file JSON
+     * @param object - JSONObject da convertire
+     * @return oggetto rubrica convertito
+     */
     public static Rubrica parseJSON(JSONObject object){
         /* recupero dati "primitivi" */
         int maxLista = object.getInt("maxLista");
@@ -339,6 +368,13 @@ public class Rubrica {
         return rubrica; //ritorno la rubrica ricreata
     }
 
+    /**
+     * Metodo per inserire una chiamata all'interno di uno
+     * dei due registri
+     * @param chiamata - oggetto da registrare
+     * @param siNascosta TRUE se bisogna inserire il valore nel registro nascosto
+     *                   FALSE se bisogna inserire il valore nel registro normale
+     */
     public void registraChiamata(Chiamata chiamata, boolean siNascosta){
         Chiamata[] registro;
 
@@ -385,7 +421,7 @@ public class Rubrica {
 
             /* controllo se è stato trovato davvero la posizione,
             * altrimenti verrà messo in fondo */
-            if(registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])>0);
+            if(registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])<0);
             else
                 index=finish+1;
         }
