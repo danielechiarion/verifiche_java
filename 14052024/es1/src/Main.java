@@ -65,10 +65,40 @@ public class Main {
                 case 2:
                     rimuoviContatto(rubrica, scanner);
                     break;
+                /* ricerca e visualizzazione dei contatti trovati */
                 case 3:
-                    inputDatiBase(datiBase, true, scanner); //richiedo i dati da inserire
-
+                    ricercaContatti(rubrica, scanner);
                     break;
+                /* ordinamento della rubrica secondo
+                * nome e cognome */
+                case 4:
+                    rubrica.ordinaContatti(); //ordinamento
+                    /* riporto che l'operazione è stata eseguita */
+                    System.out.println("Ordinamento rubrica effettuato");
+                    Wait(3);
+                    break;
+                /* effettuazione di una chiamata */
+                case 5:
+                    effettuaChiamata(rubrica, scanner);
+                    break;
+                /* viene fatto visualizzare l'elenco di tutti i contatti,
+                * con un controllo per la visualizzazione di eventuali contatti
+                * nascosti */
+                case 6:
+                    rubrica.visualizzaContatti(checkPassword(rubrica.getPassword(), scanner)); //vengono visualizzati anche i contatti nascosti se la password è corretta
+                    continuaAzione(scanner);
+                    break;
+                /* vengono visualizzate le ultime chiamate,
+                * dalla più recente alla meno recente */
+                case 7:
+                    rubrica.visualizzaRegistro(checkPassword(rubrica.getPassword(), scanner)); //vengono visualizzate le chiamate effettuate in ordine
+                    continuaAzione(scanner);
+                    break;
+                /* chiusura del programma e salvataggio dati */
+                default:
+                    System.out.println("Fine programma");
+                    Wait(3);
+                    rewriteFileJSON(filePath[0], rubrica.toJSON()); //salvataggio file
             }
         }while(scelta!= opzioni.length-1); //vado avanti fin quando non viene scelto di concludere il programma
     }
@@ -174,6 +204,11 @@ public class Main {
         rubrica.inserimento(contatto, siNascosto); //inserisco il nuovo contatto nella rubrica
     }
 
+    /**
+     * Metodo per rimuovere contatto distinguendo tra caso normale e caso nascosto
+     * @param rubrica
+     * @param scanner
+     */
     private static void rimuoviContatto(Rubrica rubrica, Scanner scanner){
         /* dichiarazione variabili e vettori */
         boolean siNascosto;
@@ -225,14 +260,121 @@ public class Main {
         }while(vetInput[0].isBlank() && vetInput[1].isBlank() && vetInput[2].isBlank()); //controllo finale per verificare se almeno un campo è stato compilato
     }
 
-    /* metodo che sceglie la tipologia
-     * di telefono da inserire */
+    /**
+     * Metodo che gestisce la ricerca di contatti all'interno
+     * della rubrica e ne fornisce la visualizzaziome.
+     * Qui non viene ritornato un solo contatto, ma anche risltati simili,
+     * che per esempio hanno lo stesso nome, lo stesso cognome ecc.
+     * @param rubrica - oggetto all'interno del quale ricercare
+     * @param scanner - per prendere in input alcuni dati
+     */
+    private static void ricercaContatti(Rubrica rubrica, Scanner scanner){
+        /* dichiarazione variabili e vettori */
+        String[] datiBase = new String[3];
+        int[] posizione;
+
+        inputDatiBase(datiBase, true, scanner); //richiedo l'inserimento di nome, cognome, telefono
+        posizione=rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true); //ricerco in tutti e due i registri, visto che un singolo contatto può sempre essere reso disponibile
+
+        /* per tutti i valori trovati, stampo l'array con
+        * le informazioni del contatto */
+        if(posizione[0]<0) //prima però controllo se sono stati trovati degli elementi
+        {
+            System.out.println("Nessun elemento trovato");
+            Wait(3);
+        }
+        else{
+            System.out.println("Risultati attinenti alla ricerca:");
+            /* visualizzo tutti i contatti trovati */
+            for(int pos : posizione)
+                System.out.println(rubrica.getContatto(pos).visualizza()+"\n");
+            Wait(3*posizione.length);
+        }
+    }
+
+    /**
+     * Metodo per effettuare una chiamata prendendo in input
+     * i dati necessari
+     * @param rubrica
+     * @param scanner
+     */
+    private static void effettuaChiamata(Rubrica rubrica, Scanner scanner){
+        /* dichiarazione variabili */
+        int anno=0, mese=0, giorno=0, ora=0, min=0;
+        int durata=0;
+        boolean siNascosti;
+        /* dichiarazione vettore */
+        int[] posizione;
+        String[] datiBase = new String[3];
+
+        /* ricerco prima il contatto */
+        siNascosti=checkPassword(rubrica.getPassword(), scanner); //controllo la password
+        inputDatiBase(datiBase, false, scanner); //richiedo l'inserimento dei dati
+        posizione=rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], siNascosti); //ricerco all'interno dei contatti un elemento con questi dati
+
+        /* se il contatto non viene trovato,
+        * il metodo si ferma nella sua esecuzione */
+        if(posizione[0]<0){
+            System.out.println("Nessun contatto trovato");
+            Wait(3);
+            return;
+        }
+
+        /* eseguo un ciclo dove ogni volta aggiungo
+        * un valore a giorno, mese, anno data e ora,
+        * in modo tale da compilare la data */
+        for(int i=0;i<7;i++){
+            System.out.printf("%d/%d/%d\t%d:%d\t%d min\n", anno, mese, giorno, ora, min, durata);
+
+            switch(i){
+                case 1 : anno=safeIntInput("Inserisci l'anno: ", scanner);
+                case 2 : mese=safeIntInput("Inserisci il mese: ", scanner);
+                case 3 : giorno=safeIntInput("Inserisci il giorno", scanner);
+                case 4 : ora=safeIntInput("Inserisci l'ora", scanner);
+                case 5 : min=safeIntInput("Inserisci i minuti", scanner);
+                case 6 : do{durata=safeIntInput("Inserisci la durata (in minuti)", scanner);}while(durata<=0);
+            }
+
+            dataOra data = new dataOra(anno, mese, giorno, ora, min); //creo la data
+
+            /* controllo se la posizione è stata riscontrata nel primo o nel secondo
+            * vettore */
+            if(posizione[0]>rubrica.getContattiNormali().length)
+                siNascosti=true;
+            else
+                siNascosti=false;
+
+            /* solo se data e ora sono corrette posso
+            * creare la chiamata e inserirla all'interno della rubrica*/
+            if(data.isDataCorretta() && data.isOraCorretta()){
+                Chiamata chiamata = new Chiamata(rubrica.getContatto(posizione[0]), data, durata); //creo la chiamata
+                rubrica.registraChiamata(chiamata, siNascosti); //la chiamata viene registrata
+            }
+        }
+    }
+
+    /**
+     * Metodo che termina una volta che viene inserito un carattere.
+     * Viene utilizzato per far riprendere l'attività del programma al momento
+     * desiderato dall'utente.
+     * @param scanner - per leggere il dato, anche se non viene considerato
+     */
+    private static void continuaAzione(Scanner scanner){
+        System.out.println("\nPremi qualsiasi tasto per continuare");
+        scanner.nextLine();
+    }
+
+    /**
+     * Metodo che permette di scegliere la tipologia di telefono da inserire
+     * @param keyboard - scanner
+     * @return valore intero scelto dall'utente
+     */
     private static int sceltaTipologia(Scanner keyboard){
         int scelta;
 
         /* input tipologia */
         scelta=menu(tipologia, keyboard);
 
-        return scelta;
+        return scelta; //ritorno scelta fatta
     }
 }
