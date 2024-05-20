@@ -1,0 +1,6 @@
+Rispetto a quanto scritto in verifica, sono state aggiunte e/o eseguite le seguenti modifiche:
+1. Viene eseguito un controllo, durante la fase di ordinamento, su quali numeri inserire nel vettore da ordinare. Nell'attuale versione dell'esercizio, è stato escluso anche l'ultimo numero, indipendentemente di quale tipo sia.
+2. Viene eseguito un controllo per l'utente su quanti numeri inserire (se non sono 10 o 11, si richiede l'inserimento).
+3. Viene eseguito un controllo anche sui numeri da inserire. Oltre al controllo delle ripetizioni, viene anche controllato che i numeri appartengano all'intervallo stabilito.
+
+Questi controlli sono stati aggiunti in quanto, durante la svolgimento della verifica, mi sono concentrato sull'algoritmo e non sui controlli.
