@@ -1,0 +1,71 @@
+Durante l'esecuzione del software, l'utente potrebbe trovarsi in uno di questi scenari:
+
+PRIMO AVVIO:
+All'utente viene chiesto di inserire la password (due volte) per accedere ai dati riservati e il numero di ultime chiamate da visualizzare (9-10-11 ecc.)
+Una volta completata questa fase, viene creato il file JSON e si arriva al secondo scenario.
+
+MENU delle OPZIONI:
+All'interno del menu delle opzioni sono presenti le seguenti funzionalità:
+- Inserisci un contatto
+- Elimina un contatto
+- Ricerca
+- Ordina rubrica
+- Effettua chiamata
+- Visualizza contatti
+- Visualizza registro chiamate
+- Chiudi rubrica
+
+INSERIMENTO DI UN CONTATTO:
+Per l'inserimento di un contatto vengono, prima di tutto, inseriti le informazioni necessarie per la registrazione di un contatto, ovvero:
+- nome
+- cognome
+- telefono
+- tipo di contratto
+
+Nell'inserimento vengono controllati che non ci siano dati vuoti e che il numero di telefono sia valido
+
+In seguito, se l'utente lo richiede, si possono inserire anche i seguenti dati:
+- nickname
+- secondo numero di telefono
+- email
+Questi dati, per ora, non contribuiranno al funzionamento dell'esercizio e viene data la possibilità anche solo alcuni dei dati. 
+
+Infine, viene chiesto l'inserimento della password se si vuole registrarlo come contatto nascosto.
+Se l'utente decide di registrarlo come normale, può semplicemente premere invio e completare la registrazione del contatto. 
+
+ELIMINAZIONE DI UN CONTATTO:
+Viene chiesto l'inserimento della password, per poter accedere ai dati nascosti. 
+Per la ricerca viene chiesto l'inserimento obbligatorio di nome, cognome e numero di telefono, che porteranno poi ad un solo risultato. 
+Se l'utente ha accesso alla password, questo viene rimosso. 
+
+RICERCA:
+Per ricercare viene chiesto all'utente di inserire i principali dati: nome, cognome e telefono.
+La novità consiste nel poter inserire solo alcuni dei dati (necessariamente uno), in modo da poter trovare anche più dato, che condividono le caratteristiche (nome, cognome ecc.). 
+Alla fine viene visualizzato l'elenco di dati simili, con tutte le caratteristiche inserite.
+
+ORDINA RUBRICA:
+Il processo viene completamente eseguito senza alcuna operazione da parte dell'utente.
+Viene solo restituito un messaggio di ordinamento effettuato. 
+
+EFFETTUA CHIAMATA:
+Viene chiesto all'utente di inserire la password, per poter accedere anche ai dati nascosti. 
+Poi viene ricercato il contatatto e, se trovato, si passa alla fase successiva.
+Viene chiesto poi di inserire i vari per la data (anno, mese, giorno, ora, minuti, secondi) assieme alla durata della chiamata.
+Viene controllata la corretta dei dati inseriti e, se tutti corretti, vengono inseriti nel registro in Rubrica (mantenuto sempre ordinato) e, poi, salvato in un file CSV. 
+
+VISUALIZZA CONTATTI:
+Viene chiesto all'utente di inserire la password per verificare se l'utente può accedere ai dati nascosti. 
+Verrà quindi visualizzato un elenco di contatti normali e, se la password è corretta, di dati nascosti.
+Per tornare al menu bisogna premere un tasto qualsiasi. 
+
+VISUALIZZA CHIAMATE:
+Verrà visualizzato un elenco delle ultime N chiamate stabilite nel boot iniziale. 
+Se l'inserimento della password risulterà corretto, verrà visualizzato sia le N chiamate normali, sia le N chiamate nascoste.
+In caso contrario, verranno solo visualizzate le chiamate normali.
+
+FINE:
+Viene mandato un messaggio all'utente della fine del programma. 
+I dati vengono salvati sul file JSON. 
+
+
+Alla fine di ogni funzionalità, il programma ritorna sempre al menu, a meno che non si scelga l'opzione FINE.
