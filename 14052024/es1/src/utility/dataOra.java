@@ -97,7 +97,7 @@ public class dataOra {
 
         /* controllo che la data sia corretta,
         * in modo da restituire i vari valori */
-        if(this.giorno<=giorniMese && giorniMese>0)
+        if(this.giorno<=giorniMese && giorniMese>0 && this.mese>0 && this.mese<13)
             return true;
         else
             return false;
