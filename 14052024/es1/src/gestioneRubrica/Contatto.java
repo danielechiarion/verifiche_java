@@ -14,6 +14,7 @@ public class Contatto {
     protected String telefono;
     protected tipoContratto tipo;
     protected AltreInfo altreInfo;
+    protected boolean nascosto;
 
     /**
      * Metodo costruttore con aggiunta di informazioni
@@ -24,7 +25,7 @@ public class Contatto {
      * @param tipo
      * @param infoExtra
      */
-    public Contatto(String nome, String cognome, String telefono, tipoContratto tipo, String infoExtra){
+    public Contatto(String nome, String cognome, String telefono, tipoContratto tipo, String infoExtra, boolean nascosto){
         this.nome=nome;
         this.cognome=cognome;
         this.telefono=telefono;
@@ -34,6 +35,7 @@ public class Contatto {
             String[] info = infoExtra.split(",");//le informazioni extra sono separate dalla virgola
             this.altreInfo=new AltreInfo(info[0], info[1], info[2]); //creo un nuovo oggetto con le informazioni extra
         }
+        this.nascosto=nascosto;
     }
 
     /* utilizzo dei vari metodi get/set */
@@ -50,6 +52,9 @@ public class Contatto {
     public tipoContratto getTipo(){
         return this.tipo;
     }
+    public boolean getNascosto(){
+        return this.nascosto;
+    }
 
     public void setNome(String x){
         this.nome=x;
@@ -62,6 +67,9 @@ public class Contatto {
     }
     public void setTipo(tipoContratto tipo){
         this.tipo=tipo;
+    }
+    public void setNascosto(){
+        this.nascosto=!this.nascosto;
     }
 
     /**
