@@ -1,0 +1,9 @@
+Per realizzare il software, sono stati utilizzati alcuni package e delle classi all'interno, che verranno di seguito descritti.
+
+=== PACKAGE UTILITY ===
+*** Classe tools
+La classe tools contiene i metodi più utilizzati per il software, ovvero:
+- ClrScr() per la pulizia dello schermo
+- Wait(int sec) genera un attesa di un certo numero di secondi, forniti da parametro
+- menu(String[] opzioni, Scanner scanner) prende in input le opzioni e lo scanner, per poi restituire la scelta effettuata. All'interno sono presenti anche dei controlli sull'intervallo.
+- messaggioErrore(int value) metodo che visualizza in output i vari messaggi di errore, generati in base al numero inserito come parametro
