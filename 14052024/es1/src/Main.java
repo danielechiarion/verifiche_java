@@ -192,8 +192,7 @@ public class Main {
 
         do {
             inputDatiBase(datiBase, false, scanner); //input dei dati base
-            if(rubrica.getContattiNormali()!=null || rubrica.getContattiNascosti(true)!=null &&
-                    rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0)
+            if(rubrica.getContatti()!=null && rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0)
                 messaggioErrore(4);
         }while(rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0); //controllo se il contatto esiste già
 
@@ -224,8 +223,8 @@ public class Main {
 
         /* creazione stringa con informazioni base
          * e creazione oggetto contatto */
-        Contatto contatto = new Contatto(datiBase[0], datiBase[1], datiBase[2], tipo, stringaExtra); //creo il contatto
-        rubrica.inserimento(contatto, siNascosto); //inserisco il nuovo contatto nella rubrica
+        Contatto contatto = new Contatto(datiBase[0], datiBase[1], datiBase[2], tipo, stringaExtra, siNascosto); //creo il contatto
+        rubrica.inserimento(contatto); //inserisco il nuovo contatto nella rubrica
     }
 
     /**
@@ -311,7 +310,7 @@ public class Main {
             System.out.println("Risultati attinenti alla ricerca:");
             /* visualizzo tutti i contatti trovati */
             for(int pos : posizione)
-                System.out.println(rubrica.getContatto(pos).visualizza()+"\n");
+                System.out.println(rubrica.getContatto(pos).visualizza(false)+"\n");
             Wait(3*posizione.length);
         }
     }
@@ -348,6 +347,7 @@ public class Main {
         * un valore a giorno, mese, anno data e ora,
         * in modo tale da compilare la data */
         for(int i=0;i<7;i++){
+            ClrScr();
             System.out.printf("%d/%d/%d\t%d:%d\t%d min\n", anno, mese, giorno, ora, min, durata);
 
             switch(i){
@@ -358,22 +358,14 @@ public class Main {
                 case 5 : min=safeIntInput("Inserisci i minuti", scanner);
                 case 6 : do{durata=safeIntInput("Inserisci la durata (in minuti)", scanner);}while(durata<=0);
             }
+        }
+        dataOra data = new dataOra(anno, mese, giorno, ora, min); //creo la data
 
-            dataOra data = new dataOra(anno, mese, giorno, ora, min); //creo la data
-
-            /* controllo se la posizione è stata riscontrata nel primo o nel secondo
-            * vettore */
-            if(posizione[0]>rubrica.getContattiNormali().length)
-                siNascosti=true;
-            else
-                siNascosti=false;
-
-            /* solo se data e ora sono corrette posso
-            * creare la chiamata e inserirla all'interno della rubrica*/
-            if(data.isDataCorretta() && data.isOraCorretta()){
-                Chiamata chiamata = new Chiamata(rubrica.getContatto(posizione[0]), data, durata); //creo la chiamata
-                rubrica.registraChiamata(chiamata, siNascosti); //la chiamata viene registrata
-            }
+        /* solo se data e ora sono corrette posso
+         * creare la chiamata e inserirla all'interno della rubrica*/
+        if(data.isDataCorretta() && data.isOraCorretta()){
+            Chiamata chiamata = new Chiamata(rubrica.getContatto(posizione[0]), data, durata); //creo la chiamata
+            rubrica.registraChiamata(chiamata, chiamata.getContatto().getStato()); //la chiamata viene registrata
         }
     }
 

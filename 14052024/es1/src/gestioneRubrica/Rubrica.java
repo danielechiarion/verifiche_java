@@ -13,11 +13,12 @@ import static utility.array.*;
 public class Rubrica {
     /* definizione attributi */
     protected String password;
-    protected Contatto[] contattiNormali;
-    protected Contatto[] contattiNascosti;
+    protected Contatto[] contatti;
     protected int maxLista;
     protected Chiamata[] registroNormale;
     protected Chiamata[] registroNascosto;
+    protected int contattiNormali;
+    protected int contattiNascosti;
 
     /* definizione dei metodi get/set */
 
@@ -26,45 +27,22 @@ public class Rubrica {
     * dato dal controllo della password, è impostato a TRUE */
     public String getPassword(){ return this.password; }
     public int getMaxLista(){ return this.maxLista; }
-    public Contatto[] getContattiNormali(){ return this.contattiNormali; }
-    public Contatto[] getContattiNascosti(boolean value){
-        /* qui occorre fare un controllo
-        * in più in quanto si dà la lista completa di contatti
-        * nascosti solo dopo autorizzazione */
-        if(value)
-            return this.contattiNascosti;
-        return null;
-    }
+    public Contatto[] getContatti(){ return this.contatti; }
     /* metodo per restituire un contatto
     all'interno di un array */
     public Contatto getContatto(int pos){
-        /* se la posizione è minore della lunghezza
-        * degli array dei contatti normali, vuol dire che
-        * si trova in questo array */
-        if(pos<this.contattiNormali.length)
-            return this.contattiNormali[pos];
-        /* altrimenti vuol dire che si trova nell'array
-        * dei contatti nascosti, nella posizione meno la lunghezza
-        * dell'array dei contratti normali */
-        else
-            return this.contattiNascosti[pos-this.contattiNormali.length];
+        return this.contatti[pos];
     }
-
     public Chiamata[] getRegistroNormale(){
         return this.registroNormale;
     }
     public Chiamata[] getRegistroNascosto(boolean value){
         if(value)
             return this.registroNascosto;
-
         return null;
     }
-    public Contatto getContattoNormale(int pos){
-        return this.contattiNormali[pos];
-    }
-    public Contatto getContattoNascosto(int pos){
-        return this.contattiNascosti[pos];
-    }
+    public int getContattiNormali(){ return this.contattiNormali; }
+    public int getContattiNascosti(){ return this.contattiNascosti; }
 
     public void setPassword(String password){ this.password=password; }
     public void setMaxLista(int maxLista){ this.maxLista=maxLista; }
@@ -78,28 +56,28 @@ public class Rubrica {
     public Rubrica(String password, int nMaxLista){
         this.password=password; //imposto la password
         this.maxLista=nMaxLista; //imposto gli attributi
-        this.registroNascosto=new Chiamata[nMaxLista]; //imposto la lunghezza del registro normal
+        this.registroNascosto=new Chiamata[nMaxLista]; //imposto la lunghezza del registro normale
         this.registroNormale=new Chiamata[nMaxLista]; //imposto la lunghezza del registro nascosto
+        /* setto a zero contatti normali e nascosti */
+        this.contattiNormali=0;
+        this.contattiNascosti=0;
     }
 
     /**
      * Metodo per l'inserimento di un contatto
      * all'interno di uno dei due vettori dedicati
      * @param contatto - elemento da aggiungere in coda
-     * @param siNascosto - assume TRUE se il contatto è nascosto
-     *                   FALSE se il contatto è normale
      */
-    public void inserimento(Contatto contatto, boolean siNascosto){
-        /* differenzio i due casi, in quanto
-        * andrò ad agire su due vettori differenti */
-        if(siNascosto){
-            this.contattiNascosti=aggiungiPosArray(this.contattiNascosti); //aggiungo una posizione
-            this.contattiNascosti[this.contattiNascosti.length-1]=contatto; //aggiungo il contatto in coda
-        }
-        else{
-            this.contattiNormali=aggiungiPosArray(this.contattiNormali);
-            this.contattiNormali[this.contattiNormali.length-1]=contatto;
-        }
+    public void inserimento(Contatto contatto){
+        this.contatti=aggiungiPosArray(this.contatti); //aggiungo una posizione all'array dei contatti
+        this.contatti[this.contatti.length-1]=contatto; //salvo l'array nella posizione
+
+        /* decido quale numero incrementare,
+        * se quello dei contatti normali o quello dei contatti nascosti */
+        if(contatto.getStato())
+            this.contattiNascosti++;
+        else
+            this.contattiNormali++;
     }
 
     /**
@@ -108,30 +86,44 @@ public class Rubrica {
      * @param pos - posizione del contatto da eliminare
      */
     public void eliminazione(int pos){
-        /* se la posizione è minore della lunghezza
-        * dell'array dei contatti norrmali,
-        * allora procedo all'eliminazione nell'array */
-        if(pos<this.contattiNormali.length)
-            this.contattiNormali = rimuoviPosArray(this.contattiNormali, pos); //rimuovo la posizione
-        /* altrimenti, vuol dire che il contatto
-        * appartiene al vettore dei contatti nascosti */
-        else{
-            pos-=this.contattiNormali.length; //la posizione sarà il valore della posizione meno la lunghezza dell'array
-            this.contattiNascosti=rimuoviPosArray(this.contattiNascosti, pos); //rimuove la posizione
-        }
+        this.contatti = rimuoviPosArray(this.contatti, pos); //invoco il metodo per la rimozione della posizione nell'array
     }
 
     /**
      * Metodo che ordina tutti i contatti normali
-     * e quelli nascosti
+     * e quelli nascosti utilizzando il bubble sort
      */
     public void ordinaContatti(){
-        /* prima di ordinare controllo
-        * se gli array hanno più di un elemento */
-        if(this.contattiNormali!=null && this.contattiNormali.length>1)
-            bubbleSort(this.contattiNormali);
-        if(this.contattiNascosti!=null && this.contattiNascosti.length>1)
-            bubbleSort(this.contattiNascosti);
+        /* prima di tutto controllo se l'array ha una dimensione
+        * uguale a 1 o se è vuoto, in modo tale da escludere questo
+        * caso dall'ordinamento */
+        if(this.contatti==null || this.contatti.length<2)
+            return;
+
+        /* dichiarazione variabili
+         * utili all'ordinamento */
+        boolean scambio; //indica se è avvenuto almeno uno scambio all'interno di un ciclo
+        int passaggi=0; //indica quanti passaggi ha compiuto il bubble sort
+        Contatto temp; //variabile temporanea per lo switch
+
+        do {
+            scambio=false; //reinizializzo ogni volta la variabile
+            for(int i=0;i<this.contatti.length-passaggi-1;i++){
+                /* se il contatto ha un cognome che viene dopo nell'ordine alfabetico,
+                 * (o il nome, in caso dello stesso cognome) ... */
+                if(this.contatti[i].getCognome().compareToIgnoreCase(this.contatti[i+1].getCognome())>0 ||
+                        this.contatti[i].getCognome().equalsIgnoreCase(this.contatti[i+1].getCognome()) &&
+                                this.contatti[i].getNome().compareToIgnoreCase(this.contatti[i+1].getNome())>0){
+                    /* ... si effettua lo scambio tra i contatti */
+                    temp=this.contatti[i];
+                    this.contatti[i]=this.contatti[i+1];
+                    this.contatti[i+1]=temp;
+
+                    scambio=true; //si aggiorna la variabile
+                }
+            }
+            passaggi++; //si incrementa il numero di passaggi fatti
+        }while(scambio); //continua se è stata fatta almeno un'operazione, altrimenti vuol dire che è già tutto ordinato
     }
 
     /**
@@ -148,32 +140,65 @@ public class Rubrica {
      * @return array con le posizioni trovate
      */
     public int[] ricercainElencoContatti(String nome, String cognome, String telefono, boolean siNascosti){
-        /* creo due array per puntare alle future
-        * posizioni date */
-        int[] posizione; //array contatti normali
-        int[] posizione2={-1}; //array contatti nascosti
+        /* dichiarazione variabili */
+        int uguali=0;
+        String param1="", param2; //stringhe per il confronto tra due parametri
 
-        posizione=ricercaContatto(this.contattiNormali, nome, cognome, telefono); //cerco prima tra i contatti normali
+        if(!nome.isBlank())
+            param1+=nome;
+        if(!cognome.isBlank())
+            param1+=cognome;
+        if(!telefono.isBlank())
+            param1+=telefono;
 
-        /* se non ho trovato niente e posso anche cercare tra i contatti nascosti */
-        if(siNascosti)
-            posizione2=ricercaContatto(this.contattiNascosti, nome, cognome, telefono); //ricerco tra i contatti nascosti
+        if(this.contatti==null)
+            return new int[]{-1};
 
+        /* scorro tutto l'array in cerca di corrispondenze */
+        for(int i=0;i<this.contatti.length;i++){
+            param2="";//reinizializzo ogni volta la stringa
+            /* pongo delle condizioni per comporre la seconda stringa, basandomi su
+             * quali campi sono rimasti vuoti */
+            if(!nome.isBlank())
+                param2+=this.contatti[i].getNome();
+            if(!cognome.isBlank())
+                param2+=this.contatti[i].getCognome();
+            if(!telefono.isBlank())
+                param2+=this.contatti[i].getTelefono();
 
-        /* prima controllo se il primo non ha posizioni,
-        * quindi ritorno la posizione dei contatti nascosti solo se
-        * è stato possibile ricercare al suo interno o se è stato
-        * trovato qualcosa */
-        if(posizione[0]<0 && posizione2[0]>=0)
-            return posizione2;
-        /* se non è stato trovato qualcosa nella primo vettore
-        * ma nel secondo sì, ritorno le posizioni del secondo vettore */
-        else if(posizione2[0]<0)
-            return posizione;
-        /* altrimenti, ritorno un array
-        * frutto della concatenazione dei due array trovati */
-        else
-            return concatenaArray(posizione, posizione2);
+            /* confronto le due stringhe e vedo se ci sono uguaglianze,
+            * controllando se posso accedere ad eventuali dati nascosti*/
+            if(param1.equalsIgnoreCase(param2) && !this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti)
+                uguali++;
+        }
+
+        /* controllo se ho trovato dei risultati
+         * e, in caso affermativo, dichiaro un vettore */
+        if(uguali==0)
+            return new int[]{-1};
+
+        int[] vetPos = new int[uguali];
+        int indexVetPos=0;
+
+        /* scorro nuovamente il valore per cercare
+        le posizioni degli oggetti uguali */
+        for(int i=0;i<this.contatti.length;i++){
+            param2="";//reinizializzo ogni volta la stringa
+            /* pongo delle condizioni per comporre la seconda stringa, basandomi su
+             * quali campi sono rimasti vuoti */
+            if(!nome.isBlank())
+                param2+=this.contatti[i].getNome();
+            if(!cognome.isBlank())
+                param2+=this.contatti[i].getCognome();
+            if(!telefono.isBlank())
+                param2+=this.contatti[i].getTelefono();
+
+            /* confronto le due stringhe e vedo se ci sono uguaglianze */
+            if(param1.equalsIgnoreCase(param2) && !this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti)
+                vetPos[indexVetPos++]=i;
+        }
+
+        return vetPos; //ritorno l'array di posizioni
     }
 
     /**
@@ -182,25 +207,44 @@ public class Rubrica {
      * @param siNascosti - indica se è possibile o meno stampare i contatti nascosti
      */
     public void visualizzaContatti(boolean siNascosti){
-        /* stampo in output tutti i contatti
-        * normali trovati */
-        System.out.println("*** ELENCO CONTATTI NORMALI ***");
-        if(this.contattiNormali==null)
-            System.out.println("Nessun contatto presente");
-        else{
-            for(Contatto x : this.contattiNormali)
-                System.out.println(x.visualizza()+"\n");
+        /* creo un array per ogni tipo di contatti (normali e nascosti),
+        * dichiarando anche i relativi indici */
+        Contatto[] elencoNormale = new Contatto[this.contattiNormali];
+        Contatto[] elencoNascosti=new Contatto[this.contattiNascosti];
+        int indexNormali=0, indexNascosti=0;
+
+        if(this.contatti!=null){
+            /* ripercorro tutto il primo vettore e trasferisco tutto
+             * in contatti normali e nascosti */
+            for(Contatto contatto : this.contatti){
+                if(contatto.getStato())
+                    elencoNascosti[indexNascosti++]=contatto;
+                else
+                    elencoNormale[indexNormali++]=contatto;
+            }
         }
 
-        /* stampo tutti i contatti se il valore e TRUE */
-        if(siNascosti){
-            System.out.println("\n*** ELENCO CONTATTI NASCOSTI ***");
-            if(this.contattiNascosti==null)
-                System.out.println("Nessun contatto presente");
-            else {
-                for(Contatto x : this.contattiNascosti)
-                    System.out.println(x.visualizza()+"\n");
-            }
+        /* infine visualizzo separatamente
+        contatti normali e nascosti */
+        System.out.println("*** CONTATTI STANDARD ***");
+        if(this.contattiNormali==0) //prima controllo se ci sono almeno dei contatti di questa categoria
+            System.out.println("Nessun contatto standard inserito");
+        else{
+            for(Contatto contatto : elencoNormale)
+                System.out.println(contatto.visualizza(false)+"\n");
+        }
+
+        /* controllo anche se l'utente ha avuto accesso
+        * a dei contatti nascosti */
+        if(!siNascosti)
+            return;
+
+        System.out.println("*** CONTATTI NASCOSTI ***");
+        if(this.contattiNascosti==0)
+            System.out.println("Nessun contatto nascosto inserito");
+        else{
+            for(Contatto contatto : elencoNascosti)
+                System.out.println(contatto.visualizza(false)+"\n");
         }
     }
 
@@ -239,78 +283,6 @@ public class Rubrica {
     }
 
     /**
-     * Metodo di ricerca di uno o più contatti
-     * in base ai parametri forniti.
-     * Viene utilizzato il metodo brute force, perchè si potrebbe
-     * ricercare solo per numero di telefono
-     *
-     * @param nome
-     * @param cognome
-     * @param telefono
-     * @return vettore delle posizioni (o -1 se non ha trovato niente)
-     */
-    private static int[] ricercaContatto(Contatto[] array, String nome, String cognome, String telefono){
-        /* dichiarazione variabili */
-        int uguali=0;
-        String param1="", param2; //stringhe per il confronto tra due parametri
-
-        if(!nome.isBlank())
-            param1+=nome;
-        if(!cognome.isBlank())
-            param1+=cognome;
-        if(!telefono.isBlank())
-            param1+=telefono;
-
-        if(array==null)
-            return new int[]{-1};
-
-        /* scorro tutto l'array in cerca di corrispondenze */
-        for(int i=0;i<array.length;i++){
-            param2="";//reinizializzo ogni volta la stringa
-            /* pongo delle condizioni per comporre la seconda stringa, basandomi su
-             * quali campi sono rimasti vuoti */
-            if(!nome.isBlank())
-                param2+=array[i].getNome();
-            if(!cognome.isBlank())
-                param2+=array[i].getCognome();
-            if(!telefono.isBlank())
-                param2+=array[i].getTelefono();
-
-            /* confronto le due stringhe e vedo se ci sono uguaglianze */
-            if(param1.equalsIgnoreCase(param2))
-                uguali++;
-        }
-
-        /* controllo se ho trovato dei risultati
-         * e, in caso affermativo, dichiaro un vettore */
-        if(uguali==0)
-            return new int[]{-1};
-
-        int[] vetPos = new int[uguali];
-        int indexVetPos=0;
-
-        /* scorro nuovamente il valore per cercare
-        le posizioni degli oggetti uguali */
-        for(int i=0;i<array.length;i++){
-            param2="";//reinizializzo ogni volta la stringa
-            /* pongo delle condizioni per comporre la seconda stringa, basandomi su
-             * quali campi sono rimasti vuoti */
-            if(!nome.isBlank())
-                param2+=array[i].getNome();
-            if(!cognome.isBlank())
-                param2+=array[i].getCognome();
-            if(!telefono.isBlank())
-                param2+=array[i].getTelefono();
-
-            /* confronto le due stringhe e vedo se ci sono uguaglianze */
-            if(param1.equalsIgnoreCase(param2))
-                vetPos[indexVetPos++]=i;
-        }
-
-        return vetPos; //ritorno l'array di posizioni
-    }
-
-    /**
      * Metodo che converte i dati contenuti in una rubrica in
      * un oggetto JSON
      * @return oggetto JSON rappresentante la rubrica
@@ -322,27 +294,22 @@ public class Rubrica {
         * da variabili primitive */
         rubrica.put("password", this.password);
         rubrica.put("maxLista", this.maxLista);
+        rubrica.put("contattiNormali", this.contattiNormali);
+        rubrica.put("contattiNascosti", this.contattiNascosti);
 
-        /* recupero tutta la lista di contatti normali,
+        /* recupero tutta la lista di contatti
         * utilizzando un JSON Array */
-        JSONArray contattiNormali = new JSONArray();
-        if(this.contattiNormali!=null){
-            for(Contatto contatto : this.contattiNormali)
-                contattiNormali.put(contatto.toJSON()); //inserisco ogni volta un valore
-            rubrica.put("contattiNormali", contattiNormali);
-        }
+        JSONArray contatti = new JSONArray();
+        if(this.contatti!=null){//prima controllo se i contatti hanno degli elementi
+            for(Contatto contatto : this.contatti)
+                contatti.put(contatto.toJSON()); //per ogni contatto ottengo il JSONObject e lo inserisco nell'array
 
-        /* recupero anche la lista di contatti nascosti */
-        JSONArray contattiNascosti = new JSONArray();
-        if(this.contattiNascosti!=null){
-            for(Contatto contatto : this.contattiNascosti)
-                contattiNascosti.put(contatto.toJSON());
-            rubrica.put("contattiNascosti", contattiNascosti); //inserisco un nuovo attributo al JSONObject
+            rubrica.put("contatti", contatti); //viene inserita infine l'elenco contatti nell'oggetto rubrica
         }
 
         /* recupero i dati del registro normale */
         JSONArray registroNormale = new JSONArray();
-        if(this.registroNormale[0]!=null){
+        if(this.registroNormale!=null && this.registroNormale[0]!=null){
             for(Chiamata chiamata : this.registroNormale)
                 registroNormale.put(chiamata.toJSON());
             rubrica.put("registroNormale", registroNormale);
@@ -350,7 +317,7 @@ public class Rubrica {
 
         /* recupero i dati anche del registro nascosto */
         JSONArray registroNascosto = new JSONArray();
-        if(this.registroNascosto[0]!=null){
+        if(this.registroNascosto!=null && this.registroNascosto[0]!=null){
             for(Chiamata chiamata : this.registroNascosto)
                 registroNascosto.put(chiamata.toJSON());
             rubrica.put("registroNascosto", registroNascosto);
@@ -372,27 +339,21 @@ public class Rubrica {
 
         Rubrica rubrica = new Rubrica(password, maxLista); //creazione nuovo oggetto rubrica
 
+        /* recupero altri dati primitivi */
+        rubrica.contattiNormali=object.getInt("contattiNormali");
+        rubrica.contattiNascosti=object.getInt("contattiNascosti");
+
         /* recupero contatti normali */
         /* creo un nuovo vettore assegnandoli una lunghezza
         * pari ai contatti salvati sul file JSON */
+        /* effettuo un try-catch perchè il vettore, se nullo,
+        * potrebbe non ancora averlo inserito */
         try{
-            rubrica.contattiNormali = new Contatto[object.getJSONArray("contattiNormali").length()];
-            /* per ogni contatto leggo il contenuto
-             * e lo trasformo in un oggetto contatto,
-             * inserendolo in un array */
-            for(int i=0;i<rubrica.contattiNormali.length;i++)
-                rubrica.contattiNormali[i]=Contatto.parseJSON(object.getJSONArray("contattiNormali").getJSONObject(i));
+            rubrica.contatti = new Contatto[object.getJSONArray("contatti").length()]; //prendo un vettore e gli assegno la lunghezza trovata nel file
+            for(int i=0;i<rubrica.contatti.length;i++)
+                rubrica.contatti[i]=Contatto.parseJSON(object.getJSONArray("contatti").getJSONObject(i)); //per ogni contatto lo riconverto
         }catch(Exception e){
-            rubrica.contattiNormali=null; //altrimenti assegno un valore null se non viene trovato niente
-        }
-
-        /* recupero i dati anche dei contatti nascosti */
-        try{
-            rubrica.contattiNascosti = new Contatto[object.getJSONArray("contattiNascosti").length()];
-            for(int i=0;i<rubrica.contattiNascosti.length;i++)
-                rubrica.contattiNascosti[i]=Contatto.parseJSON(object.getJSONArray("contattiNascosti").getJSONObject(i));
-        }catch(Exception e){
-            rubrica.contattiNascosti=null;
+            rubrica.contatti = null; //altrimenti dichiaro la rubrica null
         }
 
         /* recupero delle chiamate nel
@@ -401,8 +362,9 @@ public class Rubrica {
         try{
             for(int i=0;i<rubrica.registroNormale.length;i++)
                 rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
-
-        }catch(Exception e){}
+        }catch(Exception e){
+            rubrica.registroNormale=null;
+        }
 
         /* recupero delle chiamate
         * nel registro nascosto */
@@ -410,7 +372,9 @@ public class Rubrica {
         try{
             for(int i=0;i<rubrica.registroNascosto.length;i++)
                 rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
-        }catch(Exception e){}
+        }catch(Exception e){
+            rubrica.registroNascosto=null;
+        }
 
         return rubrica; //ritorno la rubrica ricreata
     }
@@ -481,40 +445,5 @@ public class Rubrica {
 
             registro[index]=chiamata; //posiziono infine la chiamata nella posizione corretta
         }
-    }
-    /**
-     * Metodo che sfrutta l'algoritmo di ordinamento bubble sort.
-     * Vengono utilizzati come attributi di riferimento il nome e il cognome
-     * del contatto, in modo da ottenere un elenco in ordine alfabetico.
-     * Viene inoltre effettuato un controllo se l'array è gia ordinato,
-     * in modo da ridurre il numero di azioni da compiere
-     *
-     * @param vet array di contatti da riordinare
-     */
-    private static void bubbleSort(Contatto[] vet){
-        /* dichiarazione variabili
-         * utili all'ordinamento */
-        boolean scambio; //indica se è avvenuto almeno uno scambio all'interno di un ciclo
-        int passaggi=0; //indica quanti passaggi ha compiuto il bubble sort
-        Contatto temp; //variabile temporanea per lo switch
-
-        do {
-            scambio=false; //reinizializzo ogni volta la variabile
-            for(int i=0;i<vet.length-passaggi-1;i++){
-                /* se il contatto ha un cognome che viene dopo nell'ordine alfabetico,
-                 * (o il nome, in caso dello stesso cognome) ... */
-                if(vet[i].getCognome().compareToIgnoreCase(vet[i+1].getCognome())>0 ||
-                        vet[i].getCognome().equalsIgnoreCase(vet[i+1].getCognome()) &&
-                                vet[i].getNome().compareToIgnoreCase(vet[i+1].getNome())>0){
-                    /* ... si effettua lo scambio tra i contatti */
-                    temp=vet[i];
-                    vet[i]=vet[i+1];
-                    vet[i+1]=temp;
-
-                    scambio=true; //si aggiorna la variabile
-                }
-            }
-            passaggi++; //si incrementa il numero di passaggi fatti
-        }while(scambio); //continua se è stata fatta almeno un'operazione, altrimenti vuol dire che è già tutto ordinato
     }
 }

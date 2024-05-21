@@ -1,15 +1,15 @@
 L'esercizio deve essere necessariamente costituito dai seguenti metodi:
 
 - ordinamento(int[] array)
-	vengono contati i numeri pari e creato un array a parte, tralasciando anche l'ultimo numero dell'array. Successivamente viene applicato l'algoritmo di merge sort al solo vettore di numeri pari.
+	vengono contati i numeri pari e creato un array a parte, tralasciando anche l'ultimo numero dell'array. Successivamente viene 	applicato l'algoritmo di merge sort al solo vettore di numeri pari.
 	Successivamente i valori pari vengono sostituiti all'interno dell'array originario.
 	Dato che la sostituzione viene fatta in-place, non occorre ritornare alcun valore, basta inserire l'array come parametro.
 
 - checkRipetizioni(int[] array, int posValue), dove "array è dove controllare" e posValue è dove si trova il numero da controllare.
-	In questo metodo vengono controllati tutti i valori precedenti a posValue e, se viene trovato almeno un valore uguale, viene restituito TRUE, altrimenti viene restituito FALSE.
+	In questo metodo vengono controllati tutti i valori precedenti a posValue e, se viene trovato almeno un valore uguale, viene 	restituito TRUE, altrimenti viene restituito FALSE.
 	
 - mergeSort(int[] array)
-	Questo è il metodo fondamentale per l'algoritmo di ordinamento. L'array viene diviso ricorsivamente in tante piccole sezioni, per poi riunirle ordinandole attraversso il mergeofMerge.
+	Questo è il metodo fondamentale per l'algoritmo di ordinamento. L'array viene diviso ricorsivamente in tante piccole sezioni, per 	poi riunirle ordinandole attraversso il mergeofMerge.
 	Non è previsto un ritorno di alcun valore.
 
 - mergeofMerge(int[] left, int[] right, int[] array)
