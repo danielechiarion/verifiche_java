@@ -1,3 +1,6 @@
 Il software deve soddisfare i seguenti requisiti:
 - gestire una rubrica (inserimento contatti, eliminazione, ordinamento, visualizzazione e ricerca). 
 - far utlizzare all'utente una password per accedere ad eventuali dati nascosti. 
+- gestire un elenco chiamate separato
+- entrare e uscire dalla zona "nascosta"
+- salvare i dati su file
