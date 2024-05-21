@@ -3,6 +3,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 *.json
+*.csv
 
 ### Eclipse ###
 .apt_generated

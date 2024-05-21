@@ -48,7 +48,7 @@ public class AltreInfo {
         if(!this.secondoTel.isBlank())
             output+=String.format("secondo telefono: %s\t", this.secondoTel);
         if(!this.email.isBlank())
-            output+=String.format("email: %s", this.nickname);
+            output+=String.format("email: %s", this.email);
 
         return output; //ritorno la stringa in output
     }
@@ -62,9 +62,12 @@ public class AltreInfo {
         JSONObject object = new JSONObject(); //creazione nuovo oggetto
 
         /* inserimento attributi */
-        object.put("nickname", this.nickname);
-        object.put("secondoTel", this.secondoTel);
-        object.put("email", this.email);
+        if(!this.nickname.isBlank())
+         object.put("nickname", this.nickname);
+        if(!this.nickname.isBlank())
+            object.put("secondoTel", this.secondoTel);
+        if(!this.nickname.isBlank())
+            object.put("email", this.email);
 
         return object; //ritorno l'oggetto con gli attributi inseriti
     }
@@ -76,10 +79,20 @@ public class AltreInfo {
      * @return oggetto di AltreInfo
      */
     public static AltreInfo parseJSON(JSONObject object){
-        /* ricavo informazioni */
-        String nickname = object.getString("nickname");
-        String secondoTel = object.getString("secondoTel");
-        String email = object.getString("email");
+        /* dichiarazione variabili */
+        String nickname="", secondoTel="", email="";
+
+        /* ricavo informazioni,
+        * controllando che siano state inserite*/
+        try{
+            nickname = object.getString("nickname");
+        }catch(Exception e){}
+        try {
+            secondoTel = object.getString("secondoTel");
+        }catch (Exception e){}
+        try{
+            email = object.getString("email");
+        }catch(Exception e){}
 
         return new AltreInfo(nickname, secondoTel, email); //ritorno nuovo oggetto creato
     }

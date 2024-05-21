@@ -17,10 +17,14 @@ public class array {
     public static Contatto[] aggiungiPosArray(Contatto[] array){
         /* creo un nuovo array con la dimensione
         * pari all'array incrementata di 1 */
-        Contatto[] copia = new Contatto[array.length+1];
+        Contatto[] copia;
+        if(array==null)
+            copia = new Contatto[1];
+        else
+            copia = new Contatto[array.length+1];
 
         /* copia dei valori dell'array originario */
-        for(int i=0;i<array.length;i++)
+        for(int i=0;i<copia.length-1;i++)
             copia[i]=array[i];
 
         return copia; //ritorna l'array incrementato di una posizione

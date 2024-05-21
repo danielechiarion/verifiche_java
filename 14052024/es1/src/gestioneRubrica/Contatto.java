@@ -79,7 +79,7 @@ public class Contatto {
         /* poi verifico se ci sono anche informazioni
         * ulteriori da aggiungere,
         * in tal caso le accodo alla stringa già creata */
-        if(!this.altreInfo.visualizza().isBlank())
+        if(this.altreInfo!=null && !this.altreInfo.visualizza().isBlank())
             output+=String.format("\n%s", this.altreInfo.visualizza());
 
         return output; //ritorno risultato da stampare
@@ -98,7 +98,8 @@ public class Contatto {
         object.put("cognome", this.cognome);
         object.put("telefono", this.telefono);
         object.put("tipo", this.tipo.name()); //salvo in stringa per evitare problemi
-        object.put("altreInfo", this.altreInfo.toJSON());
+        if(this.altreInfo!=null)
+            object.put("altreInfo", this.altreInfo.toJSON());
 
         return object; //ritorno oggetto creato
     }

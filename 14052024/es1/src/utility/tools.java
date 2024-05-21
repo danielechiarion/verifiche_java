@@ -98,9 +98,7 @@ public class tools {
                 input = scanner.nextInt();
             }catch (Exception e){
                 /* messaggio di errore */
-                System.out.println("Dominio errato!");
-                Wait(3);
-                System.out.println("Riprova");
+                messaggioErrore(1);
                 check=true; //modifico la variabile
                 scanner.nextLine();
             }

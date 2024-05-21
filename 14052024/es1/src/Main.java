@@ -11,6 +11,7 @@ import static utility.tools.*;
 import static utility.jsonFIle.*;
 
 import java.util.Scanner;
+import java.io.*;
 public class Main {
     /* variabili e vettori per
      * menu della tipologia del telefono */
@@ -33,8 +34,10 @@ public class Main {
                             "data/registroNormale.csv",
                             "data/registroNascosto.csv"};
 
-        /* creazione scanner */
+        /* creazione scanner e console
+        * per la lettura delle password */
         Scanner scanner = new Scanner(System.in);
+        Console console = System.console();
         /* dichiarazione variabili
         * e altri oggetti */
         int scelta;
@@ -114,19 +117,33 @@ public class Main {
     private static Rubrica initialBoot(Scanner scanner){
         /* dichiarazione variabili */
         String password, password2;
+        /*char[] input1;
+        char[] input2;*/ //array di strighe che vengono utilizzati per l'inserimento della password
         int nMax;
 
         /* chiedo l'inserimento dei dati */
-        System.out.println("Crea la tua rubrica");
+        System.out.println("PRIMO AVVIO\nCrea la tua rubrica");
         do {
             System.out.println("Inserisci la password: ");
-            password = scanner.next();
+            password= scanner.next();
             System.out.println("Inserisci nuovamente la tua password per confermare");
             password2=scanner.next();
+
+            /* ricostituzione stringhe */
+            /*password = new String(input1);
+            password2 = new String(input2);*/
+
+            /* confronto se le due password sono uguali,
+            * altrimenti richiedo di nuovo l'input */
             if(!password.equals(password2))
                 messaggioErrore(5);
         }while(!password.equals(password2)); //richiedo la password due volte per motivi di sicurezza
-        nMax = safeIntInput("Inserisci ora il numero di ultime chiamate che vuoi visualizzare nella tua cronologia: ", scanner);
+        do {
+            nMax = safeIntInput("Inserisci ora il numero di ultime chiamate che vuoi visualizzare nella tua cronologia: ", scanner);
+            /* se l'input è sbagliato, restituisco un messaggio di errore */
+            if(nMax<=0)
+                messaggioErrore(1);
+        }while(nMax<=0);
 
         return new Rubrica(password, nMax); //ritorno la nuova rubrica
     }
@@ -144,7 +161,12 @@ public class Main {
 
         /* input dati */
         System.out.println("Inserisci la password per accedere ai dati nascosti:");
-        input = scanner.nextLine();
+        try{
+            input = scanner.nextLine();
+        }catch(Exception e){
+            scanner.nextLine();
+            input=scanner.nextLine();
+        }
 
         /* restituisce TRUE se la password è corretta */
         if(password.equals(input))
@@ -170,7 +192,8 @@ public class Main {
 
         do {
             inputDatiBase(datiBase, false, scanner); //input dei dati base
-            if(rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0)
+            if(rubrica.getContattiNormali()!=null || rubrica.getContattiNascosti(true)!=null &&
+                    rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0)
                 messaggioErrore(4);
         }while(rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0); //controllo se il contatto esiste già
 
@@ -180,16 +203,17 @@ public class Main {
         /* richiesta inserimento dati optional */
         System.out.println("Vuoi inserire altre informazioni? Digita S per confermare");
         input=scanner.next().charAt(0);
+        scanner.nextLine();
 
         /* se la risposta è affermativa,
         vengono inseriti i dati aggiuntivi */
         if(Character.toUpperCase(input)=='S'){
             System.out.println("Inserisci nickname");
-            stringaExtra=scanner.next()+",";
+            stringaExtra=scanner.nextLine()+",";
             System.out.println("Inserisci secondo numero");
-            stringaExtra+=scanner.next()+",";
+            stringaExtra+=scanner.nextLine()+",";
             System.out.println("Inserisci email");
-            stringaExtra+=scanner.next();
+            stringaExtra+=scanner.nextLine();
         }
 
         /* chiedo se devo inserire i dati nel registro dei contatti

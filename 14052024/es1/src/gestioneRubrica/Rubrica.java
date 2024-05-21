@@ -126,8 +126,12 @@ public class Rubrica {
      * e quelli nascosti
      */
     public void ordinaContatti(){
-        bubbleSort(this.contattiNascosti);
-        bubbleSort(this.contattiNormali);
+        /* prima di ordinare controllo
+        * se gli array hanno più di un elemento */
+        if(this.contattiNormali!=null && this.contattiNormali.length>1)
+            bubbleSort(this.contattiNormali);
+        if(this.contattiNascosti!=null && this.contattiNascosti.length>1)
+            bubbleSort(this.contattiNascosti);
     }
 
     /**
@@ -160,7 +164,7 @@ public class Rubrica {
         * quindi ritorno la posizione dei contatti nascosti solo se
         * è stato possibile ricercare al suo interno o se è stato
         * trovato qualcosa */
-        if(posizione[0]<0 && posizione2[0]>0)
+        if(posizione[0]<0 && posizione2[0]>=0)
             return posizione2;
         /* se non è stato trovato qualcosa nella primo vettore
         * ma nel secondo sì, ritorno le posizioni del secondo vettore */
@@ -181,21 +185,21 @@ public class Rubrica {
         /* stampo in output tutti i contatti
         * normali trovati */
         System.out.println("*** ELENCO CONTATTI NORMALI ***");
-        if(this.contattiNormali.length==0)
+        if(this.contattiNormali==null)
             System.out.println("Nessun contatto presente");
         else{
             for(Contatto x : this.contattiNormali)
-                System.out.println(x.visualizza());
+                System.out.println(x.visualizza()+"\n");
         }
 
         /* stampo tutti i contatti se il valore e TRUE */
         if(siNascosti){
             System.out.println("\n*** ELENCO CONTATTI NASCOSTI ***");
-            if(this.contattiNormali.length==0)
+            if(this.contattiNascosti==null)
                 System.out.println("Nessun contatto presente");
             else {
                 for(Contatto x : this.contattiNascosti)
-                    System.out.println(x.visualizza());
+                    System.out.println(x.visualizza()+"\n");
             }
         }
     }
@@ -211,11 +215,11 @@ public class Rubrica {
         /* visualizzo prima tutto l'elenco
         del registro normale */
         System.out.println("REGISTRO NORMALE");
-        if(this.contattiNormali.length==0)
+        if(this.registroNascosto==null)
             System.out.println("Nessuna chiamata effettuata");
         else{
             System.out.println("Ultime "+this.maxLista+" chiamate");
-            for (int i=0;i<this.registroNascosto.length && this.registroNormale[i]!=null;i++)
+            for (int i=0;i<this.registroNormale.length && this.registroNormale[i]!=null;i++)
                 System.out.println(this.registroNormale[i].visualizza());
         }
 
@@ -225,7 +229,7 @@ public class Rubrica {
         /* se ho l'accesso al registro nascosto,
         * visualizzo anche le ultime chiamate */
         System.out.println("\nREGISTRO NASCOSTO");
-        if(this.contattiNormali.length==0)
+        if(this.registroNascosto==null)
             System.out.println("Nessuna chiamata effettuata");
         else{
             System.out.println("Ultime "+this.maxLista+" chiamate");
@@ -256,6 +260,9 @@ public class Rubrica {
             param1+=cognome;
         if(!telefono.isBlank())
             param1+=telefono;
+
+        if(array==null)
+            return new int[]{-1};
 
         /* scorro tutto l'array in cerca di corrispondenze */
         for(int i=0;i<array.length;i++){
@@ -319,27 +326,35 @@ public class Rubrica {
         /* recupero tutta la lista di contatti normali,
         * utilizzando un JSON Array */
         JSONArray contattiNormali = new JSONArray();
-        for(Contatto contatto : this.contattiNormali)
-            contattiNormali.put(contatto.toJSON()); //inserisco ogni volta un valore
-        rubrica.put("contattiNormali", contattiNormali);
+        if(this.contattiNormali!=null){
+            for(Contatto contatto : this.contattiNormali)
+                contattiNormali.put(contatto.toJSON()); //inserisco ogni volta un valore
+            rubrica.put("contattiNormali", contattiNormali);
+        }
 
         /* recupero anche la lista di contatti nascosti */
         JSONArray contattiNascosti = new JSONArray();
-        for(Contatto contatto : this.contattiNascosti)
-            contattiNascosti.put(contatto.toJSON());
-        rubrica.put("contattiNascosti", contattiNascosti); //inserisco un nuovo attributo al JSONObject
+        if(this.contattiNascosti!=null){
+            for(Contatto contatto : this.contattiNascosti)
+                contattiNascosti.put(contatto.toJSON());
+            rubrica.put("contattiNascosti", contattiNascosti); //inserisco un nuovo attributo al JSONObject
+        }
 
         /* recupero i dati del registro normale */
         JSONArray registroNormale = new JSONArray();
-        for(Chiamata chiamata : this.registroNormale)
-            registroNormale.put(chiamata.toJSON());
-        rubrica.put("registroNormale", registroNormale);
+        if(this.registroNormale[0]!=null){
+            for(Chiamata chiamata : this.registroNormale)
+                registroNormale.put(chiamata.toJSON());
+            rubrica.put("registroNormale", registroNormale);
+        }
 
         /* recupero i dati anche del registro nascosto */
         JSONArray registroNascosto = new JSONArray();
-        for(Chiamata chiamata : this.registroNascosto)
-            registroNascosto.put(chiamata.toJSON());
-        rubrica.put("registroNascosto", registroNascosto);
+        if(this.registroNascosto[0]!=null){
+            for(Chiamata chiamata : this.registroNascosto)
+                registroNascosto.put(chiamata.toJSON());
+            rubrica.put("registroNascosto", registroNascosto);
+        }
 
         return rubrica; //ritorno la nuova rubrica sotto formato JSONObject
     }
@@ -360,29 +375,42 @@ public class Rubrica {
         /* recupero contatti normali */
         /* creo un nuovo vettore assegnandoli una lunghezza
         * pari ai contatti salvati sul file JSON */
-        rubrica.contattiNormali = new Contatto[object.getJSONArray("contattiNormali").length()];
-        /* per ogni contatto leggo il contenuto
-        * e lo trasformo in un oggetto contatto,
-        * inserendolo in un array */
-        for(int i=0;i<rubrica.contattiNormali.length;i++)
-            rubrica.contattiNormali[i]=Contatto.parseJSON(object.getJSONArray("contattiNormali").getJSONObject(i));
+        try{
+            rubrica.contattiNormali = new Contatto[object.getJSONArray("contattiNormali").length()];
+            /* per ogni contatto leggo il contenuto
+             * e lo trasformo in un oggetto contatto,
+             * inserendolo in un array */
+            for(int i=0;i<rubrica.contattiNormali.length;i++)
+                rubrica.contattiNormali[i]=Contatto.parseJSON(object.getJSONArray("contattiNormali").getJSONObject(i));
+        }catch(Exception e){
+            rubrica.contattiNormali=null; //altrimenti assegno un valore null se non viene trovato niente
+        }
 
         /* recupero i dati anche dei contatti nascosti */
-        rubrica.contattiNascosti = new Contatto[object.getJSONArray("contattiNascosti").length()];
-        for(int i=0;i<rubrica.contattiNascosti.length;i++)
-            rubrica.contattiNascosti[i]=Contatto.parseJSON(object.getJSONArray("contattiNascosti").getJSONObject(i));
+        try{
+            rubrica.contattiNascosti = new Contatto[object.getJSONArray("contattiNascosti").length()];
+            for(int i=0;i<rubrica.contattiNascosti.length;i++)
+                rubrica.contattiNascosti[i]=Contatto.parseJSON(object.getJSONArray("contattiNascosti").getJSONObject(i));
+        }catch(Exception e){
+            rubrica.contattiNascosti=null;
+        }
 
         /* recupero delle chiamate nel
         * registro normale */
         rubrica.registroNormale = new Chiamata[rubrica.maxLista];
-        for(int i=0;i<rubrica.registroNormale.length;i++)
-            rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
+        try{
+            for(int i=0;i<rubrica.registroNormale.length;i++)
+                rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
+
+        }catch(Exception e){}
 
         /* recupero delle chiamate
         * nel registro nascosto */
         rubrica.registroNascosto = new Chiamata[rubrica.maxLista];
-        for(int i=0;i<rubrica.registroNascosto.length;i++)
-            rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
+        try{
+            for(int i=0;i<rubrica.registroNascosto.length;i++)
+                rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
+        }catch(Exception e){}
 
         return rubrica; //ritorno la rubrica ricreata
     }
