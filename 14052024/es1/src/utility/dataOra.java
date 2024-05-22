@@ -170,30 +170,26 @@ public class dataOra {
      *          >0 - la prima data è maggiore
      *          <0  - la prima data è minore
      */
-    public int compareTo(dataOra dataOra2){
-        /* prima di tutto, unisco i dati di ogni elemento
-        * in un unica stringa, in modo da affiancare nell'ordine:
-        * anno, mese, giorno, ora, min */
-        String group1 = Integer.toString(this.anno)+Integer.toString(this.mese)+Integer.toString(this.giorno)+Integer.toString(this.ora)+Integer.toString(this.min);
-        String group2 = Integer.toString(dataOra2.anno)+Integer.toString(dataOra2.mese)+Integer.toString(dataOra2.giorno)+Integer.toString(dataOra2.ora)+Integer.toString(dataOra2.min);
-
-        /* ora, riporto la sequenza di numeri ottenuti in
-        * formato intero */
-        int number1=Integer.parseInt(group1);
-        int number2=Integer.parseInt(group2);
-
-        /* facendo così, abbiamo ottenuto due sequenze di numeri
-        * (con ogni sequenza con numeri dal più al meno rilevante)
-        * da confrontare numericamente.
-        * Adesso possiamo decidere quali dati restituire */
-        if(number1==number2)
-            return 0;
-        else if(number1>number2)
-            return 1;
-        else
-            return -1;
+    public int compareTo(dataOra dataOra2) {
+        // Confronta gli anni
+        if (this.anno != dataOra2.anno) {
+            return Integer.compare(this.anno, dataOra2.anno);
+        }
+        // Confronta i mesi
+        if (this.mese != dataOra2.mese) {
+            return Integer.compare(this.mese, dataOra2.mese);
+        }
+        // Confronta i giorni
+        if (this.giorno != dataOra2.giorno) {
+            return Integer.compare(this.giorno, dataOra2.giorno);
+        }
+        // Confronta le ore
+        if (this.ora != dataOra2.ora) {
+            return Integer.compare(this.ora, dataOra2.ora);
+        }
+        // Confronta i minuti
+        return Integer.compare(this.min, dataOra2.min);
     }
-
     /**
      * Metodo che stampa i output tutti i possibili
      * errori su data e ora, in base al numero inserito

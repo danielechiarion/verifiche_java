@@ -86,6 +86,12 @@ public class Rubrica {
      * @param pos - posizione del contatto da eliminare
      */
     public void eliminazione(int pos){
+        /* prima modifico il contatore dei contatti */
+        if(this.contatti[pos].getStato())
+            this.contattiNascosti--;
+        else
+            this.contattiNormali--;
+
         this.contatti = rimuoviPosArray(this.contatti, pos); //invoco il metodo per la rimozione della posizione nell'array
     }
 
@@ -310,16 +316,16 @@ public class Rubrica {
         /* recupero i dati del registro normale */
         JSONArray registroNormale = new JSONArray();
         if(this.registroNormale!=null && this.registroNormale[0]!=null){
-            for(Chiamata chiamata : this.registroNormale)
-                registroNormale.put(chiamata.toJSON());
+            for(int i=0;i<this.registroNormale.length && this.registroNormale[i]!=null;i++)
+                registroNormale.put(this.registroNormale[i].toJSON());
             rubrica.put("registroNormale", registroNormale);
         }
 
         /* recupero i dati anche del registro nascosto */
         JSONArray registroNascosto = new JSONArray();
-        if(this.registroNascosto!=null && this.registroNascosto[0]!=null){
-            for(Chiamata chiamata : this.registroNascosto)
-                registroNascosto.put(chiamata.toJSON());
+        if(this.registroNascosto[0]!=null){
+            for(int i=0;i<this.registroNascosto.length && this.registroNascosto[i]!=null;i++)
+                registroNascosto.put(this.registroNascosto[i].toJSON());
             rubrica.put("registroNascosto", registroNascosto);
         }
 
@@ -386,82 +392,50 @@ public class Rubrica {
      * @param siNascosta TRUE se bisogna inserire il valore nel registro nascosto
      *                   FALSE se bisogna inserire il valore nel registro normale
      */
-    public void registraChiamata(Chiamata chiamata, boolean siNascosta){
+    public void registraChiamata(Chiamata chiamata, boolean siNascosta) {
         Chiamata[] registro; //dichiaro array
         /* dichiaro le variabili */
         int index, start, finish;
 
         /* il vettore punterà al registro normale o nascosto in
-        * base al valore del booleano */
-        if(!siNascosta){
-            if(this.registroNormale==null)
-                this.registroNormale=new Chiamata[this.maxLista];
-            registro=this.registroNormale;
-        }
-        else{
-            if(this.registroNascosto==null)
-                this.registroNascosto=new Chiamata[this.maxLista];
-            registro=this.registroNascosto;
+         * base al valore del booleano */
+        if (!siNascosta) {
+            if (this.registroNormale == null)
+                this.registroNormale = new Chiamata[this.maxLista];
+            registro = this.registroNormale;
+        } else {
+            if (this.registroNascosto == null)
+                this.registroNascosto = new Chiamata[this.maxLista];
+            registro = this.registroNascosto;
         }
 
-        /* se non abbiamo posizioni occupate,
-        * la posizione occupata è la prima */
+        /* se non ho ancora nessuna posizione occupata,
+        * lo inserisco come primo valore e termino l'esecuzione */
         if(posOccupateArray(registro)==0){
-            index=0; //assegno l'indice
-            registro[index]=chiamata; //sposto la chiamata
-            return; //termino il ciclo
+            registro[0]=chiamata;
+            return;
         }
 
-        /* conto quale posizione gli spetta
-        * utilizzando la ricerca dicotomica */
-        index=registro.length/2;
-        start=0;
-        finish=posOccupateArray(registro); //dichiaro indici
-        /* controllo subito se la chiamata deve essere posizionata
-        * in cima o in fondo alla lista */
-        if(chiamata.compareTo(registro[0])<0)
-            index=0;
-        else if(chiamata.compareTo(registro[finish-1])>0)
-            index=finish;
-        else{
-            /* comincio la ricerca, compiendola solo se
-             * non ho già trovato la posizione ideale, in cui la posizione sunbito
-             * prima è minore e la posizione subito dopo è maggiore */
-            while(registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])>0
-                    || registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])<0
-                    && start<=finish){
-                /* se il numero è minore di
-                 * quello richiesto, mi sposto a sinistra,
-                 * quindi modifico il limite */
-                if((registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])>0))
-                {
-                    finish=index-1;
-                    index=(start+finish)/2;
-                }
-                /* se il numero è maggiore
-                 * di quello richiesto, mi sposto a destra,
-                 * quindi modifico lo start */
-                else if(registro[start].compareTo(registro[index])<0 && registro[finish].compareTo(registro[index])<0)
-                {
-                    start=index+1;
-                    index=(start+finish)/2;
-                }
-            }
+        /* creo un nuovo registro di dimensione incrementata di 1,
+         * ponendo la chiamata all'inizio e copiando il resto dei valori */
+        Chiamata[] regConfronto = new Chiamata[registro.length + 1]; //creo il registro
+        regConfronto[0] = chiamata; //posiziono la chiamata al primo posto
+        System.arraycopy(registro, 0, regConfronto, 1, registro.length); //copio i restanti valori
 
-            /* controllo se è stato trovato davvero la posizione,
-            * altrimenti verrà messo in fondo */
-            if(registro[start].compareTo(registro[index])>0 && registro[finish].compareTo(registro[index])<0);
-            else
-                index=finish+1;
+        /* dichiaro una variabile temporanea e attuo
+         * uno swap se to trovo la prima data minore rispetto a quella che viene dopo */
+        Chiamata temp;
+        for (int i = 1; i < regConfronto.length && regConfronto[i]!=null && regConfronto[i - 1].compareTo(regConfronto[i]) < 0; i++) {
+            temp = regConfronto[i];
+            regConfronto[i] = regConfronto[i - 1];
+            regConfronto[i - 1] = temp;
         }
 
-        /* controllo se la posizione è all'interno del vettore */
-        if(index<registro.length-1){
-            /* sposto prima tutti i valori */
-            for(int i=registro.length-1;i>index;i--)
-                registro[i]=registro[i-1];
-
-            registro[index]=chiamata; //posiziono infine la chiamata nella posizione corretta
-        }
+        /* copio infine i valori trovati fino all'ultima posizione dell'array
+        * in uno dei due vettoridi registro */
+        if(siNascosta)
+            System.arraycopy(regConfronto, 0, this.registroNascosto, 0, this.maxLista);
+        else
+            System.arraycopy(regConfronto, 0, this.registroNormale, 0, this.maxLista);
     }
 }

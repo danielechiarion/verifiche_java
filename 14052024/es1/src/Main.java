@@ -9,6 +9,7 @@ import gestioneRubrica.*;
 import utility.dataOra;
 import static utility.tools.*;
 import static utility.jsonFIle.*;
+import static utility.CSVFile.*;
 
 import java.util.Scanner;
 import java.io.*;
@@ -16,6 +17,11 @@ public class Main {
     /* variabili e vettori per
      * menu della tipologia del telefono */
     public static String[] tipologia = {"MODALITA' TELEFONO","abitazione", "cellulare", "aziendale"};
+    /* definizione dei vari file necessari
+     * al funzionamento del programma */
+    public static String[] filePath = {"data/rubrica.json",
+            "data/registroNormale.csv",
+            "data/registroNascosto.csv"};
     public static void main(String[] args) {
         /* definizione delle varie opzioni del programma */
         String[] opzioni = {"LA TUA RUBRICA",
@@ -27,12 +33,6 @@ public class Main {
         "Visualizza contatti",
         "Visualizza registro chiamate",
         "Chiudi rubrica"};
-
-        /* definizione dei vari file necessari
-        * al funzionamento del programma */
-        String[] filePath = {"data/rubrica.json",
-                            "data/registroNormale.csv",
-                            "data/registroNascosto.csv"};
 
         /* creazione scanner e console
         * per la lettura delle password */
@@ -51,6 +51,9 @@ public class Main {
         }catch(Exception e){
             rubrica = initialBoot(scanner); //altrimenti creo da 0 la rubrica
             createNewFile(filePath[0]); //e creo il nuovo file JSON
+            /* creo anche i file CSV con l'aggiunta dell'intestazione */
+            createNewFile(filePath[1]);
+            createNewFile(filePath[2]);
         }
 
         do {
@@ -311,7 +314,7 @@ public class Main {
             /* visualizzo tutti i contatti trovati */
             for(int pos : posizione)
                 System.out.println(rubrica.getContatto(pos).visualizza(false)+"\n");
-            Wait(3*posizione.length);
+            continuaAzione(scanner);
         }
     }
 
@@ -378,6 +381,13 @@ public class Main {
         if(data.isDataCorretta() && data.isOraCorretta()){
             Chiamata chiamata = new Chiamata(rubrica.getContatto(posizione[0]), data, durata); //creo la chiamata
             rubrica.registraChiamata(chiamata, chiamata.getContatto().getStato()); //la chiamata viene registrata
+
+            /* scelgo inoltre in quale file salvare i
+            * dati, in base allo stato del contatto */
+            if(chiamata.getContatto().getStato())
+                appendDataCSV(filePath[2], chiamata.toCSV()); //lo salvo nel registro nascosto
+            else
+                appendDataCSV(filePath[1], chiamata.toCSV()); //lo salvo nel registro normale
         }
     }
 
@@ -389,7 +399,12 @@ public class Main {
      */
     private static void continuaAzione(Scanner scanner){
         System.out.println("\nPremi qualsiasi tasto per continuare");
-        scanner.nextLine();
+        try {
+            scanner.nextLine();
+        }catch (Exception e){
+            scanner.next();
+            scanner.nextLine();
+        }
     }
 
     /**

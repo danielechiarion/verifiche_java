@@ -60,6 +60,22 @@ public class Chiamata {
     }
 
     /**
+     * Metodo che prende l'oggetto chiamata utilizzando
+     * i dati principali per restituire una stringa formattata
+     * da salvare in un file CSV
+     * @return stringa formattata della chiamata
+     */
+    public String toCSV(){
+        /* recupero data e ora separate */
+        String[] infoData = this.dataOra.visualizza().split("-");
+
+        /* restituzione formato stringa da inserire nel
+        * file CSV */
+        return String.format("%s,%s,%d,%s,%s,%s", infoData[0], infoData[1],
+                this.durata, this.contatto.getTelefono(), this.contatto.getCognome(), this.contatto.getNome());
+    }
+
+    /**
      * Metodo che legge da un file JSON una chiamata e la converte
      * in oggetto della classe chiamata
      * @param object in JSON da convertire
