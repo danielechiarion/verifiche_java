@@ -1,0 +1,146 @@
+Per realizzare il software, sono stati utilizzati alcuni package e delle classi all'interno, che verranno di seguito descritti.
+
+=== PACKAGE UTILITY ===
+*** Classe tools
+La classe tools contiene i metodi più utilizzati per il software, ovvero:
+- ClrScr() per la pulizia dello schermo
+- Wait(int sec) genera un attesa di un certo numero di secondi, forniti da parametro
+- menu(String[] opzioni, Scanner scanner) prende in input le opzioni e lo scanner, per poi restituire la scelta effettuata. All'interno sono presenti anche dei controlli sull'intervallo.
+- messaggioErrore(int value) metodo che visualizza in output i vari messaggi di errore, generati in base al numero inserito come parametro
+- safeIntInput(String testoInput, Scanner scanner) metodo che consente di controllare il dominio nell'inserimento di un dato intero. Viene richiesto, però, il testo della richiesta e lo scanner per prendere in input i dati.
+
+*** Classe jsonFile
+La classe contiene i metodi più utilizzati per la gestione di un file JSON. 
+- readDataJSON(String path) in base all'indirizzo del file, legge il contenuto e ne restituisce un JSONObject
+- rewriteFileJSON(String path, Object object) metodo che riscrive il file seguendo il percorso inserito come parametro
+- createNewFile(String path) metodo che permette di creare un nuovo file partendo dall'indirizzo inserito
+
+*** Classe dataOra
+Classe che permette di gestire data e ora creando degli oggetti ed effettuando dei controlli. 
+Un oggetto è costituito dai seguenti attributi interi:
+- anno
+- mese
+- giorno
+- data
+- ora 
+e dai seguenti metodi riferiti agli oggetti:
+- get()/set() per i vari attributi
+- dataOra() metodo costruttore che richiede in inserimento tutti gli attributi precedentemente elencati
+- isBisestile() metodo che controlla se l'anno è bisestie. Ritorna TRUE se lo è, FALSE se non lo è. 
+- isDataCorretta() controlla se la data è corretta controllando il giorno associato al mese e il mese. Ritorna TRUE se la data è corretta, FALSE se non lo è.
+- isOraCorretta() controlla se l'ora è corretta controllando l'ora e i minuti inseriti. Ritorna TRUE se l'ora è corretta, FALSE se non lo è.
+- visualizza() permette di restituire una stringa formatta per visualizzare data e ora completa
+- compareTo(dataOra anotherdata) permette di confrontare data e ora in modo da restiuire 0 se le due date sono uguali, <0 se la prima data viene prima, >0 se la prima data viene dopo.
+- toJSON() metodo che converte la data e ora in un JSONObject per agevolare il salvataggio su un file JSON. 
+e dai seguenti metodi statici:
+- parseJSON(JSONObject object) metodo che prende l'oggetto JSON e lo riconverte in un oggetto della classe dataOra, ritornando l'oggetto creato. 
+- erroreDataOra(int num) metodo che visualizza l'errore associato alla data in base al valore inserito
+
+*** Classe array
+Classe che gestisce gli array. 
+La classe è costituita dai seguenti metodi:
+- aggiungiPosArray(Contatto[] array) metodo che aggiunge una posizione all'array copiando il contenuto già esistente.
+- rimuoviPosArray(Contatto[] array, int pos) metodo che rimuove la posizione dell'array e copia tutti gli altri elementi.
+- concatenaArray(int[] array1, int[] array2) metodo che concatena due array restituendone uno frutto dell'unione del primo e del secondo.
+- posOccupateArray(Object[] array) metodo che conta quante posizione dell'array sono effettivamente occupate. 
+
+=== PACKAGE GESTIONERUBRICA ===
+*** Classe Contatto
+Classe che gestisce un contatto e vari metodi associati. 
+L'oggetto è costituito dai seguenti attributi:
+- nome (stringa)
+- cognome (stringa)
+- telefono (stringa)
+- tipo (enumeratore)
+- infoExtra (appartente alla classe AltreInfo)
+- stato (booleano che indica la tipologia di contatto, TRUE se è nascosto, FALSE se non lo è)
+e dai seguenti metodi riferiti agli oggetti:
+- get()/set() dei vari attributi
+- visualizza(boolean value) permette di visualizzare le varie caratteristiche del contatto, ma solo quelle inserite. Il parametro passato, se è TRUE fa visualizzare in output anche la scritta NORMALE o NASCOSTO, se è FALSE non viene inserito questo attributo.
+- toJSON() converte il contatto e ritorna un JSONObject, pronto al salvataggio su file JSON. 
+e dai seguenti metodi statici:
+- parseJSON() metodo che converte l'oggetto JSON in un oggetto contatto, ritornandolo. 
+
+*** Classe tipoContratto
+La classe tipoContratto contiene semplicemente l'enumeratore con i vari tipi di contratto, ovvero:
+- abitazione
+- cellulare
+- aziendale
+- undefined (assegnata di deafult)
+
+*** Classe AltreInfo
+Classe che gestisce alcune informazioni aggiuntive, con alcuni metodi da gestire. 
+La classe è costituita dai seguenti attributi di tipo stringa:
+- nickname
+- secondoTel
+- email
+e dai seguenti metodi associati agli oggetti:
+- get()/set() dei vari attributi
+- AltreInfo() metodo costruttore dove si richiede di inserire tutti gli attributi definiti nella classe
+- visualizza() metodo che visualizza le informazioni secondarie, solo se sono state inserite
+- toJSON() che converte l'oggetto in un JSONObject, pronto per il salvataggio in un file JSON
+e dai seguenti metodi statici:
+- parseJSON(JSONObject object) metodo che prende l'oggetto JSON e ritorna un oggetto altreInfoù
+
+*** Classe Chiamata
+La classe gestisce il comportamento e le modifiche associate ad una chiamata. 
+La classe è costituita dai seguenti attributi:
+- contatto (oggetto della classe Contatto)
+- dataOra (oggetto della classe dataOra)
+- durata (intero)
+e dai seguenti metodi associati agli oggetti
+- get()/set() riferiti ai vari attributi
+- Chiamata() metodo costruttore che richiede l'inserimento di tutti i dati necessari al completamento di tutti gli attributi
+- visualizza() metodo che restituisce i dati necessari alla chiamata in formato stringa (data e ora, nome, cognome, numero di telefono, durata della chiamata)
+- compareTo(Chiamata anotherChiamate) metodo che consente di comparare una chiamata con un altra confrontando data, ora e durata. Restituirà un valore <0 se la prima stringa viene prima o è uguale o un valore >0 se la prima stringa viene dopo. Per la gestione delle chiamate, non è contemplato che le chiamate siano uguali.
+- toJSON() metodo che converte l'oggetto chiamata in un oggetto JSON
+e dai seguenti metodi statici:
+- parseJSON(JSONObject object) metodo che prende in input un oggetto JSON e lo riconverte in un oggetto Chiamata.
+
+*** Classe Rubrica
+La classe permette di gestire le varie funzionalità presenti in una rubrica, unendo tutte le classi di questo package.
+La classe è infatti costituita dai seguenti attributi:
+- password (stringa per accedere alle informazioni riservate)
+- maxLista (numero intero che indica quante sono le ultime chiamate da tenere in memoria nell'array di registro)
+- contatti (vettore della classe contatto che raggruppa tutti i contatti inseriti. Rimane sempre pieno.)
+- contattiNormali (contatore che indica quanti contatti non riservati sono stati inseriti)
+- contattiNascosti (contatore che indica quanti contatti nascosti sono stati inseriti)
+- registroNormale (array della classe Chiamata che raggruppa le ultime chiamate non riservate, tante quanto previsto da maxLista)
+- registroNascosto (array della classe Chiamata che raggruppa le ultime chiamate riservate, sempre tante quante stabilite da maxLista). 
+ed è costituita dai seguenti metodi riferiti agli oggetti:
+- get()/set() dei vari attributi
+- Rubrica() metodo costruttore che prende in input solo maxLista e password, che sono i dati richiesti nel boot iniziale
+- inserimento() metodo che prevede l'inserimento di un contatto all'interno dell'array, andando anche a cambiare il contatore di contatti normali o nascosti. 
+- eliminazione(int pos) data la posizione del contatto da eliminare, riduce la lunghezza dell'array lasciando invariato il resto del contenuto.
+- ordinaContatti() metodo che ordina i contatti per nome e cognome utilizzando l'algoritmo del bubble sort. 
+- ricercainElencoContatti(String nome, String cognome, String telefono, boolean siNascosti) metodo che consente la ricerca di contatti, prendendo in input nome, cognome e telefono, oltre ad un booleano che indica se cercare anche tra i contatti nascosti. La particolarità di questo metodo è che ritorna un array di interi, quindi più posizioni di contatti che possono avere attributi simili. Se invece non trova niente, ritorna un solo valore <0. 
+- visualizzaContatti (boolean value) metodo che visualizza in output i contatti suddividendoli in normali e nascosti. Il valore booleano, se è TRUE fa visualizzare anche i contatti nascosti, se è FALSE non li fa visualizzare. 
+- visualizzaRegistro(boolean value) metodo che permette di visualizzare in output le ultime chiamate dalla più alla meno recente, tante quante prevede nMaxLista. Il valore booleano, anche qui, serve per indicare se visualizzare il registro nascosto o meno. 
+- registraChiamata(Chiamata chiamata, boolean siNascosta) metodo che registra una chiamata passata per parametro, con un valore booleano che indica se salvarla nel registro normale (FALSE) o nel registro nascosto (TRUE). Prima di inserirla nell'array viene effettuato un controllo sulla posizione in un cui si dovrebbe trovare cronologicamente. Se è meno recente di tutte le altre inserite e se l'array è pieno, può anche non venire inserita. 
+- toJSON() metodo che converte la rubrica in un JSONObject, che sarà poi ciò che verrà salvato nel file JSON.
+ed è costituita dai seguenti metodi statici:
+- parseJSON(JSONObject object) metodo che prende un JSONObject e lo riconverte in una rubrica, che viene viene restituita alla fine del metodo. 
+
+
+=== MAIN ===
+La classe Main prevede, chiaramente, l'utilizzo di entrambi i package inseriti. 
+Durante lo svolgimento dell'esercizio, sarà importante utilizzare le seguenti variabili/array/oggetti:
+- Scanner scanner per prendere i dati in input
+- String[] filePath dove inserire all'interno tutti i percorsi dei file all'interno dei quali salvare i dati. 
+- String[] opzioni per salvare le funzionalità della rubrica. 
+- Rubrica rubrica per compiere le varie operazioni
+
+Pertanto sarà necessario disporre dei seguenti metodi statici:
+- initialBoot() metodo che verrà utilizzato solo al primo avvio del software sul dispositivo, in quanto non viene rilevato ancora nessun file. Viene chiesto quindi di inserire la password e il numero di ultime chiamate che si vuole visualizzare. Alla fine verrà ritornata la nuova rubrica creata. 
+- checkPassword(String password, Scanner scanner) metodo basilare per il funzionamento del codice. Viene chiesto infatti di inserire la password per accedere ai dati riservati. In base alla risposta dell'utente, verrà restituito TRUE se la password è giusta, FALSE se è sbagliata. 
+- inputDatiBase(String[] vetInput, boolean ricerca, Scanner scanner) metodo che prevede l'inserimento dei dati basilari (nome, cognome, telefono). Oltre al vettore da popolare con i dati e lo scanner per l'input, viene richiesto anche un booleano, che serve per capire se è obbligatorio inserire tutti i dati (FALSE) o solo alcuni (TRUE). Se non viene inserito niente, si genera un errore. 
+- aggiungiContatto(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la richiesta di inserimento dei dati per la creazione di un contatto. Una volta raccolti e validati, questi vengono inseriti all'interno della rubrica, forniti come parametro. 
+- rimuoviContatto(Rubrica rubrica, int pos) metodo che gestisce l'IO con l'utente per l'eliminazione di un contatto. Una volta raccolti i dati, eseguita la ricerca contatto e controllato che questo esista, si procede all'eliminazione del contatto. 
+- ricerca(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la ricerca di contatti. Dopo aver controllato i dati e aver ottenuto dei risultati dall'algoritmo di ricerca, vengono visualizzati o i risultati, se è stato trovato qualcosa, o un errore, se non è stato trovato niente. 
+- effettuaChiamata(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la gestione di una chiamata. Dopo aver ricercato l'utente, inserito i dati necessari e averli validati, si procede alla registrazione della chiamata, nel vettore e su file CSV. 
+- continuaAzione(Scanner scanner) metodo che genera una pausa fin quando non viene digitato un carattere qualsiasi. 
+- sceltaTipologia(Scanner scanner) metodo che permette la scelta della tipologia di contratto, in quanto ci troviamo davanti ad un enumeratore. Dopo aver controllato la scelta, viene restituito un valore intero che corrisponde alla posizione dell'array di stringhe "tipologia" associato all'enumeratore. 
+
+
+Il programma, dopo il boot iniziale (o la lettura dati, se non siamo alla prima volta) e la scelta dell'operazione, si strutturerà in uno switch case dove, ad ogni operazione, corrisponde uno dei metodi sopra descritti. 
+Il programma termina quando viene digitata l'opzione "FINE", dove i dati vengono salvati nel file JSON. 
