@@ -127,6 +127,10 @@ public class Contatto {
      * @return Contatto convertito
      */
     public static Contatto parseJSON(JSONObject object){
+        /* dichiarazione variabili
+        * per informazioni aggiuntive */
+        String nickname, secondoTel, email;
+
         /* recupero informazioni */
         String nome = object.getString("nome");
         String cognome = object.getString("cognome");
@@ -135,12 +139,18 @@ public class Contatto {
         AltreInfo altreInfo;
         try{
             altreInfo = AltreInfo.parseJSON(object.getJSONObject("altreInfo"));
+            nickname= altreInfo.getNickname();
+            email= altreInfo.getEmail();
+            secondoTel= altreInfo.getSecondoTel();
         }catch(Exception e){
-            altreInfo=new AltreInfo("", "", "");
+            email="/";
+            secondoTel="/";
+            nickname="/";
         }
+
         boolean nascosto = object.getBoolean("stato");
 
         return new Contatto(nome, cognome, telefono, tipo,
-                altreInfo.getNickname()+","+altreInfo.getSecondoTel()+","+altreInfo.getEmail(), nascosto); //creo nuovo oggetto
+                nickname+","+secondoTel+","+email, nascosto); //creo nuovo oggetto
     }
 }

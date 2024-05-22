@@ -351,12 +351,24 @@ public class Main {
             System.out.printf("%d/%d/%d\t%d:%d\t%d min\n", anno, mese, giorno, ora, min, durata);
 
             switch(i){
-                case 1 : anno=safeIntInput("Inserisci l'anno: ", scanner);
-                case 2 : mese=safeIntInput("Inserisci il mese: ", scanner);
-                case 3 : giorno=safeIntInput("Inserisci il giorno", scanner);
-                case 4 : ora=safeIntInput("Inserisci l'ora", scanner);
-                case 5 : min=safeIntInput("Inserisci i minuti", scanner);
-                case 6 : do{durata=safeIntInput("Inserisci la durata (in minuti)", scanner);}while(durata<=0);
+                case 1 :
+                    anno=safeIntInput("Inserisci l'anno: ", scanner);
+                    break;
+                case 2 :
+                    mese=safeIntInput("Inserisci il mese: ", scanner);
+                    break;
+                case 3 :
+                    giorno=safeIntInput("Inserisci il giorno", scanner);
+                    break;
+                case 4 :
+                    ora=safeIntInput("Inserisci l'ora", scanner);
+                    break;
+                case 5 :
+                    min=safeIntInput("Inserisci i minuti", scanner);
+                    break;
+                case 6 :
+                    do{durata=safeIntInput("Inserisci la durata (in minuti)", scanner);}while(durata<=0);
+                    break;
             }
         }
         dataOra data = new dataOra(anno, mese, giorno, ora, min); //creo la data

@@ -363,7 +363,7 @@ public class Rubrica {
             for(int i=0;i<rubrica.registroNormale.length;i++)
                 rubrica.registroNormale[i]=Chiamata.parseJSON(object.getJSONArray("registroNormale").getJSONObject(i));
         }catch(Exception e){
-            rubrica.registroNormale=null;
+            rubrica.registroNormale=new Chiamata[rubrica.maxLista];
         }
 
         /* recupero delle chiamate
@@ -373,7 +373,7 @@ public class Rubrica {
             for(int i=0;i<rubrica.registroNascosto.length;i++)
                 rubrica.registroNascosto[i]=Chiamata.parseJSON(object.getJSONArray("registroNascosto").getJSONObject(i));
         }catch(Exception e){
-            rubrica.registroNascosto=null;
+            rubrica.registroNascosto=new Chiamata[rubrica.maxLista];
         }
 
         return rubrica; //ritorno la rubrica ricreata
@@ -387,18 +387,36 @@ public class Rubrica {
      *                   FALSE se bisogna inserire il valore nel registro normale
      */
     public void registraChiamata(Chiamata chiamata, boolean siNascosta){
-        Chiamata[] registro;
+        Chiamata[] registro; //dichiaro array
+        /* dichiaro le variabili */
+        int index, start, finish;
 
         /* il vettore punterà al registro normale o nascosto in
         * base al valore del booleano */
-        if(!siNascosta)
+        if(!siNascosta){
+            if(this.registroNormale==null)
+                this.registroNormale=new Chiamata[this.maxLista];
             registro=this.registroNormale;
-        else
+        }
+        else{
+            if(this.registroNascosto==null)
+                this.registroNascosto=new Chiamata[this.maxLista];
             registro=this.registroNascosto;
+        }
+
+        /* se non abbiamo posizioni occupate,
+        * la posizione occupata è la prima */
+        if(posOccupateArray(registro)==0){
+            index=0; //assegno l'indice
+            registro[index]=chiamata; //sposto la chiamata
+            return; //termino il ciclo
+        }
 
         /* conto quale posizione gli spetta
         * utilizzando la ricerca dicotomica */
-        int index=registro.length/2, start=0, finish=posOccupateArray(registro); //dichiaro indici
+        index=registro.length/2;
+        start=0;
+        finish=posOccupateArray(registro); //dichiaro indici
         /* controllo subito se la chiamata deve essere posizionata
         * in cima o in fondo alla lista */
         if(chiamata.compareTo(registro[0])<0)

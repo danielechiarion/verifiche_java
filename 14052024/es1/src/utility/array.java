@@ -87,9 +87,11 @@ public class array {
     public static int posOccupateArray(Object[] array){
         int cont=0; //dichiaro contatore
 
-        /* conto quante posizioni sono occupate */
-        for(int i=0;array[i]!=null;i++)
-            cont++;
+        if(array!=null){
+            /* conto quante posizioni sono occupate */
+            for(int i=0;i<array.length && array[i]!=null;i++)
+                cont++;
+        }
 
         return cont; //ritorno il contatore
     }
