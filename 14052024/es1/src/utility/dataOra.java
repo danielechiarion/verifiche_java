@@ -112,9 +112,9 @@ public class dataOra {
     public boolean isOraCorretta(){
         /* visualizzo i possibili messaggi di errore */
         if(this.ora<0 || this.ora>24)
-            messaggioErrore(3);
+            erroriDataOra(3);
         if(this.min<0 || this.min>59)
-            messaggioErrore(4);
+            erroriDataOra(4);
         ClrScr();
 
         /* controllo l'ora e restituisco un valore booleano */

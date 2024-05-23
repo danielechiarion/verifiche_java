@@ -8,6 +8,8 @@ La classe tools contiene i metodi più utilizzati per il software, ovvero:
 - menu(String[] opzioni, Scanner scanner) prende in input le opzioni e lo scanner, per poi restituire la scelta effettuata. All'interno sono presenti anche dei controlli sull'intervallo.
 - messaggioErrore(int value) metodo che visualizza in output i vari messaggi di errore, generati in base al numero inserito come parametro
 - safeIntInput(String testoInput, Scanner scanner) metodo che consente di controllare il dominio nell'inserimento di un dato intero. Viene richiesto, però, il testo della richiesta e lo scanner per prendere in input i dati.
+- isStringNumeric(String input) metodo che serve a controllare se una stringa contiene solo numeri e, semmai spazi. Il metodo ritorna TRUE se la stringa è solo numerica, FALSE se contiene altri caratteri (oltre agli spazi).
+- inputSoloNumeriStringa(String testoInput, Scanner scanner) metodo che esegue l'input di una stringa controllando che i dati siano solo numerici. La variabile testoInput indica quale richiesta inserire in output per l'utente. 
 
 *** Classe jsonFile
 La classe contiene i metodi più utilizzati per la gestione di un file JSON. 
@@ -36,6 +38,14 @@ e dai seguenti metodi statici:
 - parseJSON(JSONObject object) metodo che prende l'oggetto JSON e lo riconverte in un oggetto della classe dataOra, ritornando l'oggetto creato. 
 - erroreDataOra(int num) metodo che visualizza l'errore associato alla data in base al valore inserito
 
+*** Classe CSVFile
+Classe che gestisce le operazioni di lettura/scrittura su un file CSV. 
+La classe è costituita dai seguenti metodi:
+- appendDataCSV(String path, String contenuto) metodo che scrive una stringa (contenuto) su un file CSV, seguendo il percorso fornito dal parametro. 
+- generaIntestazione() metodo che ritorna una stringa generata ad hoc per i file di registro. 
+- contaRigheCSV(String filePath) metodo che conta il numero di righe in un file e lo restiuisce. Il percorso è inserito da parametro.
+- writeDataCSV(String filePath, String contenuto) metodo che sovrascrive il contenuto di un file CSV. 
+ 
 *** Classe array
 Classe che gestisce gli array. 
 La classe è costituita dai seguenti metodi:
@@ -94,6 +104,7 @@ e dai seguenti metodi associati agli oggetti
 - visualizza() metodo che restituisce i dati necessari alla chiamata in formato stringa (data e ora, nome, cognome, numero di telefono, durata della chiamata)
 - compareTo(Chiamata anotherChiamate) metodo che consente di comparare una chiamata con un altra confrontando data, ora e durata. Restituirà un valore <0 se la prima stringa viene prima o è uguale o un valore >0 se la prima stringa viene dopo. Per la gestione delle chiamate, non è contemplato che le chiamate siano uguali.
 - toJSON() metodo che converte l'oggetto chiamata in un oggetto JSON
+- toCSV() metodo che ritorna una stringa formattata per salvare gli elementi principali della chiamata in un file CSV.
 e dai seguenti metodi statici:
 - parseJSON(JSONObject object) metodo che prende in input un oggetto JSON e lo riconverte in un oggetto Chiamata.
 
@@ -137,7 +148,8 @@ Pertanto sarà necessario disporre dei seguenti metodi statici:
 - aggiungiContatto(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la richiesta di inserimento dei dati per la creazione di un contatto. Una volta raccolti e validati, questi vengono inseriti all'interno della rubrica, forniti come parametro. 
 - rimuoviContatto(Rubrica rubrica, int pos) metodo che gestisce l'IO con l'utente per l'eliminazione di un contatto. Una volta raccolti i dati, eseguita la ricerca contatto e controllato che questo esista, si procede all'eliminazione del contatto. 
 - ricerca(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la ricerca di contatti. Dopo aver controllato i dati e aver ottenuto dei risultati dall'algoritmo di ricerca, vengono visualizzati o i risultati, se è stato trovato qualcosa, o un errore, se non è stato trovato niente. 
-- effettuaChiamata(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la gestione di una chiamata. Dopo aver ricercato l'utente, inserito i dati necessari e averli validati, si procede alla registrazione della chiamata, nel vettore e su file CSV. 
+- effettuaChiamata(Rubrica rubrica, Scanner scanner) metodo che gestisce l'IO con l'utente per la gestione di una chiamata. Dopo aver ricercato l'utente, inserito i dati necessari e averli validati, si procede alla registrazione della chiamata, nel vettore e su file CSV.
+- cambiaStatoContatto(Rubrica rubrica, Scanner scanner) metodo che cambia un contatto dell'elenco, andando a modificare in particolare l'attributo di stato. Questo metodo gestisce l'IO con l'utente, controlla la password, prende in input i dati e, se trova riscontro nell'elenco, cambia stato. L'inserimento della password, in questo caso, è obbligatoria per lo svolgimento di questa parte di software. 
 - continuaAzione(Scanner scanner) metodo che genera una pausa fin quando non viene digitato un carattere qualsiasi. 
 - sceltaTipologia(Scanner scanner) metodo che permette la scelta della tipologia di contratto, in quanto ci troviamo davanti ad un enumeratore. Dopo aver controllato la scelta, viene restituito un valore intero che corrisponde alla posizione dell'array di stringhe "tipologia" associato all'enumeratore. 
 

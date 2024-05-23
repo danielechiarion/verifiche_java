@@ -5,7 +5,7 @@ All'utente viene chiesto di inserire la password (due volte) per accedere ai dat
 Una volta completata questa fase, viene creato il file JSON e si arriva al secondo scenario.
 
 MENU delle OPZIONI:
-All'interno del menu delle opzioni sono presenti le seguenti funzionalità:
+All'interno del menu delle opzioni sono presenti le seguenti funzionalità (descritte nei successivi scenari):
 - Inserisci un contatto
 - Elimina un contatto
 - Ricerca
@@ -13,6 +13,7 @@ All'interno del menu delle opzioni sono presenti le seguenti funzionalità:
 - Effettua chiamata
 - Visualizza contatti
 - Visualizza registro chiamate
+- Cambia stato contatto
 - Chiudi rubrica
 
 INSERIMENTO DI UN CONTATTO:
@@ -22,7 +23,7 @@ Per l'inserimento di un contatto vengono, prima di tutto, inseriti le informazio
 - telefono
 - tipo di contratto
 
-Nell'inserimento vengono controllati che non ci siano dati vuoti e che il numero di telefono sia valido
+Nell'inserimento vengono controllati che non ci siano dati vuoti e che il numero di telefono sia valido e che lo stesso contatto non venga inserito due volte.
 
 In seguito, se l'utente lo richiede, si possono inserire anche i seguenti dati:
 - nickname
@@ -63,9 +64,17 @@ Verrà visualizzato un elenco delle ultime N chiamate stabilite nel boot inizial
 Se l'inserimento della password risulterà corretto, verrà visualizzato sia le N chiamate normali, sia le N chiamate nascoste.
 In caso contrario, verranno solo visualizzate le chiamate normali.
 
+CAMBIA STATO CONTATTO:
+In questa funzionalità si avrà la possibilità di trasformare un contatto da visibile a nascosto e viceversa. 
+Verrà quindi chiesta obbligatoriamente la password. Nel caso questa sia corretta, viene chiesto l'inserimento dei dati base (nome, cognome, telefono). Grazie a questi, viene effettuata una ricerca e, se il contatto esiste, gli viene cambiato stato e vengono aggiornati i contatori di contatti normali e nascosti. 
+
 FINE:
 Viene mandato un messaggio all'utente della fine del programma. 
 I dati vengono salvati sul file JSON. 
+
+
+Non è necessario abilitare un comando per passare dalla modalità normale a quella riservata per l'utente. 
+Questo perchè, ad ogni operazione, viene sempre chiesto l'inserimento della password. Questo metodo viene giudicato più sicuro, in quanto non si rischia che un'altro utente visualizzi dati riservati se si lascia il software sbloccato e incustodito. 
 
 
 Alla fine di ogni funzionalità, il programma ritorna sempre al menu, a meno che non si scelga l'opzione FINE.

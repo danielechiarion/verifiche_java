@@ -1,0 +1,20 @@
+Rispetto a quanto scritto in verifica, sono state apportate al codice le seguenti modifiche:
+
+1. GESTIONE CONTATTI che inizialmente era stata prevista mantenendo contatti normali e nascosti separati. In fase di sviluppo del codice, si è ritenuto più conveniente utilizzare un solo array di contatti aggiungendo al contatto un'attributo di stato che indica se il contatto è normale (FALSE) o nascosto (TRUE). 
+
+2. SALVATAGGIO FILE 
+In questa parte di codice non era stato approfondito nel dettaglio. In seguito, si è ritenuto opportuno creare per ogni classe un metodo toJSON per convertire in un file JSON e parseJSON per ritornare all'oggetto una volta fatta la lettura.
+
+3. UTILIZZO FILE CSV 
+Visto che il file JSON, secondo quanto stabilito da relazione, doveva contenere solo le ultime chiamate, è stato disposto anche l'utilizzo di fileCSV per salvare tutte le chiamate. Tali file non sono leggibili da software, ma, per ipotesi, potrebbero essere utilizzati dalla compagnia telefonica, che necessita di avere tutto il traffico dati dell'utente. 
+Quindi, per la classe Chiamata, è stato inserito un metodo toCSV per permettere il salvataggio della chiamata su file.
+
+4. AGGIUNTA DI ULTERIORI CLASSI 
+Durante la verifica si era pensato di utilizzare per la chiamata e le informazioni aggiuntive, delle semplici stringhe. Tuttavia, avendo la necessità di gestire con particolari funzionalità ognuno di questi dati, si è pensato di creare una classe con ognuno di questi, con i propri attributi e i propri controlli, in modo da poterli utilizzarli al meglio e predisporre il software a ulteriori espansioni. 
+
+5. CAMBIAMENTO DI STATO 
+Per completare l'esercizio e fornire alla rubrica maggiore funzionalità, si è pensato di aggiungere opzione anche il cambiamento di stato di un contatto. 
+
+
+
+

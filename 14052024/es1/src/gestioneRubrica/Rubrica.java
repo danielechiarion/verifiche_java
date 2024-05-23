@@ -46,6 +46,8 @@ public class Rubrica {
 
     public void setPassword(String password){ this.password=password; }
     public void setMaxLista(int maxLista){ this.maxLista=maxLista; }
+    public void setContattiNormali(int num){ this.contattiNormali+= num; }
+    public void setContattiNascosti(int num){ this.contattiNascosti+=num; }
 
     /**
      * Metodo costruttore della classe
@@ -148,7 +150,8 @@ public class Rubrica {
     public int[] ricercainElencoContatti(String nome, String cognome, String telefono, boolean siNascosti){
         /* dichiarazione variabili */
         int uguali=0;
-        String param1="", param2; //stringhe per il confronto tra due parametri
+        String param1="", param2=""; //stringhe per il confronto tra due parametri
+        boolean simile;
 
         if(!nome.isBlank())
             param1+=nome;
@@ -172,9 +175,8 @@ public class Rubrica {
             if(!telefono.isBlank())
                 param2+=this.contatti[i].getTelefono();
 
-            /* confronto le due stringhe e vedo se ci sono uguaglianze,
-            * controllando se posso accedere ad eventuali dati nascosti*/
-            if(param1.equalsIgnoreCase(param2) && !this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti)
+            /* confronto le due stringhe e vedo se ci sono uguaglianze */
+            if(param1.equalsIgnoreCase(param2) && (!this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti))
                 uguali++;
         }
 
@@ -200,7 +202,7 @@ public class Rubrica {
                 param2+=this.contatti[i].getTelefono();
 
             /* confronto le due stringhe e vedo se ci sono uguaglianze */
-            if(param1.equalsIgnoreCase(param2) && !this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti)
+            if(param1.equalsIgnoreCase(param2) && (!this.contatti[i].getStato() || this.contatti[i].getStato() && siNascosti))
                 vetPos[indexVetPos++]=i;
         }
 

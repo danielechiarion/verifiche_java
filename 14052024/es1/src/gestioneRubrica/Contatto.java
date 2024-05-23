@@ -68,7 +68,7 @@ public class Contatto {
     public void setTipo(tipoContratto tipo){
         this.tipo=tipo;
     }
-    public void setNascosto(){
+    public void setStato(){
         this.stato=!this.stato;
     }
 

@@ -32,6 +32,7 @@ public class Main {
         "Effettua una chiamata",
         "Visualizza contatti",
         "Visualizza registro chiamate",
+        "Cambia stato contatto",
         "Chiudi rubrica"};
 
         /* creazione scanner e console
@@ -100,6 +101,10 @@ public class Main {
                     rubrica.visualizzaRegistro(checkPassword(rubrica.getPassword(), scanner)); //vengono visualizzate le chiamate effettuate in ordine
                     continuaAzione(scanner);
                     break;
+                /* viene cambiato lo stato del contatto */
+                case 8:
+                    cambiaStatoContatto(rubrica, scanner);
+                    break;
                 /* chiusura del programma e salvataggio dati */
                 default:
                     System.out.println("Fine programma");
@@ -161,10 +166,15 @@ public class Main {
      */
     private static boolean checkPassword(String password, Scanner scanner){
         String input; //dichiarazione variabile
+        char[] pw;
+        Console console = System.console(); //creo la console
 
         /* input dati */
-        System.out.println("Inserisci la password per accedere ai dati nascosti:");
         try{
+            pw = console.readPassword("Inserisci la password per accedere ai dati nascosti:");
+            input = new String(pw);
+        }catch (NullPointerException e){
+            System.out.println("Inserisci la password per accedere ai dati nascosti:");
             input = scanner.nextLine();
         }catch(Exception e){
             scanner.nextLine();
@@ -193,11 +203,13 @@ public class Main {
         char input;
         boolean siNascosto;
 
-        do {
-            inputDatiBase(datiBase, false, scanner); //input dei dati base
-            if(rubrica.getContatti()!=null && rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0)
-                messaggioErrore(4);
-        }while(rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0); //controllo se il contatto esiste già
+        inputDatiBase(datiBase, false, scanner); //input dei dati base
+        /* se il contatto esiste già,
+        * esco dal metodo */
+        if(rubrica.getContatti()!=null && rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true)[0]>=0){
+            messaggioErrore(4);
+            return;
+        }
 
         /* richiedo in inserimento il tipo di contratto */
         tipo=tipoContratto.valueOf(tipologia[sceltaTipologia(scanner)]);
@@ -212,8 +224,7 @@ public class Main {
         if(Character.toUpperCase(input)=='S'){
             System.out.println("Inserisci nickname");
             stringaExtra=scanner.nextLine()+",";
-            System.out.println("Inserisci secondo numero");
-            stringaExtra+=scanner.nextLine()+",";
+            stringaExtra+=inputSoloNumeriStringa("Inserisci il secondo numero", scanner)+",";
             System.out.println("Inserisci email");
             stringaExtra+=scanner.nextLine();
         }
@@ -275,8 +286,7 @@ public class Main {
                 vetInput[1]=scanner.nextLine();
             }while(!ricerca && vetInput[1].isBlank());
             do {
-                System.out.println("Inserisci il numero di telefono");
-                vetInput[2]=scanner.nextLine();
+                vetInput[2]=inputSoloNumeriStringa("Inserisci il numero di telefono", scanner);
             }while(!ricerca && vetInput[2].isBlank());
 
             /* possibile errore in caso di mancato compilamento
@@ -392,6 +402,51 @@ public class Main {
     }
 
     /**
+     * Metodo che cambia lo stato di un contatto registrato
+     * (da normale a nascosto e viceversa)
+     * @param rubrica - dove ricercare il contatto
+     * @param scanner - per prendere in input i dati
+     */
+    public static void cambiaStatoContatto(Rubrica rubrica, Scanner scanner){
+        /* dichiarazione vettori e variabili
+        * per il funzionamento del metodo */
+        int[] posizione;
+        String[] datiBase = new String[3];
+
+        if(!checkPassword(rubrica.getPassword(), scanner)) //prima di tutto controllo se la password è stata inserita correttamente
+            return; //altrimenti non è possibile cambiare lo stato di un contatto
+
+        inputDatiBase(datiBase, false, scanner); //poi prendo in input i dati
+        posizione= rubrica.ricercainElencoContatti(datiBase[0], datiBase[1], datiBase[2], true); //ricerco i dati inseriti all'interno di una rubrica
+
+        /* se non è stato trovato alcun contatto
+        * interrompo l'esecuzione del metodo */
+        if(posizione[0]<0){
+            System.out.println("Nessun contatto trovato");
+            Wait(3);
+            return;
+        }
+
+        /* altrimenti cambio lo stato del contatto */
+        rubrica.getContatto(posizione[0]).setStato();
+
+        /* cambio il contatore che indica il numero
+        * di contatti normali e nascosti presenti */
+        if(rubrica.getContatto(posizione[0]).getStato()){
+            rubrica.setContattiNormali(+1);
+            rubrica.setContattiNascosti(-1);
+        }else{
+            rubrica.setContattiNormali(-1);
+            rubrica.setContattiNascosti(+1);
+        }
+
+        /* restituisco output del cambiamento di stato
+        * riuscito */
+        System.out.println("Cambiamento stato utente avvenuto con successo!");
+        Wait(5);
+    }
+
+    /**
      * Metodo che termina una volta che viene inserito un carattere.
      * Viene utilizzato per far riprendere l'attività del programma al momento
      * desiderato dall'utente.
@@ -402,7 +457,6 @@ public class Main {
         try {
             scanner.nextLine();
         }catch (Exception e){
-            scanner.next();
             scanner.nextLine();
         }
     }

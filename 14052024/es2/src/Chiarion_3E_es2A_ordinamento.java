@@ -33,7 +33,7 @@ public class Chiarion_3E_es2A_ordinamento {
         /* inserimento numeri */
         boolean repeat; //variabile che controlla se ci sono degli errori
 
-        System.out.println("Inserisci numeri positivi non ripetuti: ");
+        System.out.println("Inserisci numeri positivi non ripetuti (da 1 a 30): ");
         /* ripetizione dell'input */
         for (int i = 0; i < array.length; i++) {
             do {
