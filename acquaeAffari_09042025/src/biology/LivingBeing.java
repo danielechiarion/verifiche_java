@@ -159,7 +159,7 @@ public abstract class LivingBeing implements Water, Cloneable {
      * @param environment object that describes a certain environment
      * @return TRUE if the animal can live in that environment
      */
-    public abstract double isRightEnvironment(Environment environment);
+    public abstract boolean isRightEnvironment(Environment environment);
 
     /**
      * Returns a new clone of the object
