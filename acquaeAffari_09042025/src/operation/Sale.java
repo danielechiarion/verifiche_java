@@ -7,7 +7,10 @@ import list.IdCounter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Sell implements IdCounter, Cloneable {
+/**
+ * Class used to sell animals and plants
+ */
+public class Sale implements IdCounter, Cloneable {
     /**
      * Maximum aggressive animals
      */
@@ -49,7 +52,7 @@ public class Sell implements IdCounter, Cloneable {
      * Method to generate a sell
      * @param costumer costumer for the selling
      */
-    public Sell(Costumer costumer){
+    public Sale(Costumer costumer){
         this.costumer = costumer;
         this.notAggressiveAnimalsCounter = 0;
         this.aggressiveAnimalsCounter = 0;
@@ -58,5 +61,35 @@ public class Sell implements IdCounter, Cloneable {
         this.sellNumber = IdCounter.newId(idCounter);
     }
 
+    /**
+     * Return the number of the sell
+     * @return sell code
+     */
+    public int getSellNumber() {
+        return sellNumber;
+    }
 
+    /**
+     * Returns the costumer
+     * @return clone of the costumer
+     */
+    public Costumer getCostumer() {
+        return costumer.clone();
+    }
+
+    /**
+     * Returns the date of the sale
+     * @return date of the sale
+     */
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    /**
+     * Sets a new costumer
+     * @param costumer new costumer
+     */
+    public void setCostumer(Costumer costumer) {
+        this.costumer = costumer;
+    }
 }
