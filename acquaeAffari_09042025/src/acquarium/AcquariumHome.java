@@ -7,11 +7,15 @@ import list.IdCounter;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * Class of a home acquarium
  */
 public class AcquariumHome implements IdCounter, Cloneable, Catalog {
+    /* ID counter */
+    private static int idCounter;
+
     /**
      * Environment of the acquarium
      */
@@ -41,6 +45,11 @@ public class AcquariumHome implements IdCounter, Cloneable, Catalog {
     protected int plantCounter;
 
     /**
+     * ID of the acquarium
+     */
+    protected int id;
+
+    /**
      * Constructor of a new acquarium
      * @param environment environment of the acquarium
      * @param maxAnimals maximum number of animals in the acquarium
@@ -53,6 +62,7 @@ public class AcquariumHome implements IdCounter, Cloneable, Catalog {
         this.setMaxPlants(maxPlants);
         this.animalCounter = 0;
         this.plantCounter = 0;
+        this.id = IdCounter.newId(idCounter);
     }
 
     /**
@@ -126,70 +136,115 @@ public class AcquariumHome implements IdCounter, Cloneable, Catalog {
     }
 
     /**
-     * Method to add a new animal in the list
+     * Return the ID of the acquarium
+     * @return ID of the acquarium
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Method to add a new living being in the list
      * @param obj object to add
-     * @throws Exception if the object cannot be converted into a animal or if the animal already exists
+     * @throws Exception if the object cannot be converted into a living being or if it already exists
      */
     @Override
     public void addElement(Object obj)throws Exception{
-        if(!(obj instanceof Animal))
-            throw new ClassCastException("Object cannot be converted into animal");
+        if(!(obj instanceof LivingBeing))
+            throw new ClassCastException("Object cannot be converted into living being");
 
-        Animal animal = (Animal) obj;
-        if(this.animalList.contains(animal))
-            throw new IllegalStateException("animal already exists");
+        LivingBeing livingBeing = (LivingBeing) obj;
+        if(this.population.contains(livingBeing))
+            throw new IllegalStateException("Living being already exists");
 
-        this.animalList.add(animal);
+        this.population.add(livingBeing);
     }
 
     /**
-     * Method to remove a animal from the
+     * Method to remove a living being from the
      * list
      * @param obj object to be removed
-     * @throws Exception if the object can't be converted to a animal or if the animal is not found
+     * @throws Exception if the object can't be converted to a living being or if it is not found
      */
     @Override
     public void removeElement(Object obj)throws Exception {
-        if(!(obj instanceof living being))
-            throw new ClassCastException("Object cannot be converted into animal");
+        if(!(obj instanceof LivingBeing))
+            throw new ClassCastException("Object cannot be converted into living being");
 
-        Animal animal = (Animal) obj;
-        if(!this.animalList.contains(animal))
+        LivingBeing livingBeing = (LivingBeing) obj;
+        if(!this.population.contains(livingBeing))
             throw new NoSuchElementException("animal not found");
 
-        this.animalList.remove(animal);
+        this.population.remove(livingBeing);
     }
 
     /**
-     * Return the animal by the index given
+     * Return the living being by the index given
      * @param index index of the object
-     * @return clone of the animal
+     * @return clone of the living being
      * @throws IndexOutOfBoundsException if the index is out of the bounds of the list
      */
     @Override
     public Object getElement(int index)throws IndexOutOfBoundsException{
-        if(index<0 || index>=animalList.size())
+        if(index<0 || index>=population.size())
             throw new IndexOutOfBoundsException("Arraylist index out of bounds");
 
-        return this.animalList.get(index).clone();
+        return this.population.get(index).clone();
     }
 
     /**
-     * Method that returns a clone of the animal
+     * Method that returns a clone of the living being
      * by the animal given.
      * It's usually used in researchs
      * @param element equal object
      * @return clone of the animal found
-     * @throws Exception if the animal is not found or the element can't be converted into a animal
+     * @throws Exception if the living being is not found or the element can't be converted into it
      */
+    @Override
     public Object getElement(Object element)throws Exception{
-        if(!(element instanceof Animal))
-            throw new ClassCastException("Object cannot be converted into animal");
+        if(!(element instanceof LivingBeing))
+            throw new ClassCastException("Object cannot be converted into living being");
 
-        Animal animal = (Animal) element;
-        if(!this.animalList.contains(animal))
+        LivingBeing livingBeing = (LivingBeing) element;
+        if(!this.population.contains(livingBeing))
             throw new NoSuchElementException("animal not found");
 
-        return this.animalList.get(this.animalList.indexOf(animal));
+        return this.population.get(this.population.indexOf(livingBeing));
+    }
+
+    /**
+     * Equals method that compares
+     * to AcquariumHome objects by the ID given
+     * @param object object to be compared
+     * @return TRUE if the objects are equal
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof AcquariumHome that)) return false;
+        return this.id == that.id;
+    }
+
+    /**
+     * toString of a Home Acquarium
+     * @return string format with the data of the home acquarium
+     */
+    @Override
+    public String toString(){
+        return String.format("%s\n%d max animals\t%d max plants\t%d total population",
+                this.environment.toString(), this.maxAnimals, this.maxPlants, this.population.size());
+    }
+
+    /**
+     * Generate a clone of the acquarium
+     * @return clone of the AcquariumHome object
+     */
+    @Override
+    public AcquariumHome clone(){
+        try{
+            return (AcquariumHome) super.clone();
+        }catch(CloneNotSupportedException e){
+            return null;
+        }
     }
 }

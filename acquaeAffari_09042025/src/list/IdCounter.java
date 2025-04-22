@@ -13,7 +13,7 @@ public interface IdCounter {
      * @param id last ID used
      * @return new ID
      */
-    private static int newId(int id){
+    static int newId(int id){
         return id++;
     }
 }
